@@ -1,7 +1,7 @@
 const CACHE_NAME = 'votol-dash-cache-v1';
 const urlsToCache = [
   './',
-  './votol-VR-dash.html',
+  './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
