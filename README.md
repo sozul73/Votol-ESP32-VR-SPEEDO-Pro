@@ -1,7 +1,10 @@
+
 🛵 Votol Dash Pro - ESP32 BLE Web Dashboard
 Votol Dash Pro adalah antarmuka web modern dan responsif berbasis Progressive Web App (PWA) yang dirancang untuk memonitor data CAN Bus dari controller Votol motor listrik secara real-time. Proyek ini bekerja dengan cara menerima data JSON dari modul ESP32 yang terhubung ke controller melalui koneksi Bluetooth Low Energy (BLE).
 
 Dashboard ini dapat dijalankan langsung dari browser web pendukung (seperti Chrome) dan dapat diinstal ke layar utama (Home Screen) HP sebagai aplikasi native yang dapat berjalan 100% Offline.
+
+https://sozul73.github.io/Votol-ESP32-VR-SPEEDO-Pro/votol-VR-dash.html
 
 ✨ Fitur Utama
 📊 Real-time Dashboard: Menampilkan Speedometer (KM/H), RPM, dan Status Mode Berkendara (PARK, MID, SPORT, DRIVE) tanpa hambatan (zero-lag).
