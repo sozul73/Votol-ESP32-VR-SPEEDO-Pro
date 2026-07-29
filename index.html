@@ -88,25 +88,25 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
         /* Cards */
-        .card { background: var(--panel-bg); border: 1px solid var(--border-col); border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: background-color 0.3s;}
-        .label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 10px;}
+        .card { background: var(--panel-bg); border: 1px solid var(--border-col); border-radius: 12px; padding: 10px; margin-bottom: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: background-color 0.3s;}
+        .label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 5px;}
         .stats-row { display: flex; justify-content: space-between; align-items: center; }
         .stat-box { display: flex; flex-direction: column; }
         .stat-box b { font-size: 20px; color: var(--text-main); }
         
         /* Grid Layouts */
-        .info-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        .info-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .info-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .info-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
         .card.mini { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; margin-bottom: 0;}
         .card.mini b { font-size: 18px; }
         
         /* --- DASHBOARD GAUGES UI & LAYOUTS --- */
-        .dash-layout { display: flex; flex-direction: column; gap: 15px; }
-        .main-gauge-section { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .dash-layout { display: flex; flex-direction: column; gap: 6px; }
+        .main-gauge-section { display: flex; flex-direction: column; align-items: center; gap: 2px; }
         
         .gauge-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
         .main-gauge { width: 240px; height: 240px; }
-        .sub-gauges-container { display: flex; gap: 20px; width: 100%; justify-content: center; margin-top: 5px; }
+        .sub-gauges-container { display: flex; gap: 15px; width: 100%; justify-content: center; margin-top: 0px; }
         .sub-gauge { width: 120px; height: 120px; }
         
         .gauge-svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
@@ -139,7 +139,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 5px 25px; 
-            margin-top: -10px; 
+            margin-top: -35px; 
             z-index: 10;
             position: relative;
         }
@@ -165,7 +165,7 @@
         /* --- POWER METER DYNAMICS --- */
         .power-bar-container {
             height: 12px; background: var(--border-col); border-radius: 6px; 
-            margin: 15px 0; overflow: hidden; position: relative; width: 100%;
+            margin: 8px 0; overflow: hidden; position: relative; width: 100%;
         }
 
         .power-bar-fill {
@@ -180,6 +180,20 @@
         
         .landscape-only { display: none !important; }
         .temp-grid-3 { display: flex; justify-content: space-around; text-align: center; width: 100%; margin-top: 10px;}
+
+        /* --- PERBAIKAN BUG VERTIKAL --- */
+        /* 1. Sembunyikan Maps PIP di layar vertikal */
+        #maps-pip-container {
+            display: none !important;
+        }
+        
+        /* 2. Fix lebar teks Power agar tidak membuat bar melar/goyang */
+        #dash-power-val {
+            min-width: 75px; 
+            text-align: right; 
+            display: inline-block;
+            font-variant-numeric: tabular-nums; /* Mencegah angka bergeser */
+        }
         
 	    /* --- LANDSCAPE ORIENTATION STYLES --- */
         @media (orientation: landscape) and (min-height: 300px) {
@@ -228,6 +242,11 @@
             .stat-box b { font-size: 14px !important; } 
             .stat-box small.label { font-size: 9px !important; }
             .relay-text { display: inline-block !important; font-size: 11px; font-weight: bold; }
+
+            /* --- KEMBALIKAN MAPS PIP DI HORIZONTAL --- */
+            #maps-pip-container {
+                display: flex !important;
+            }
         }
 
         /* --- MAP PIP MODE STYLES --- */
@@ -385,7 +404,7 @@
                 </div>
 
                 <div class="stats-group">
-                    <div style="display: flex; justify-content: flex-start; margin-bottom: 8px; z-index: 5;">
+                    <div id="maps-pip-container" style="justify-content: flex-start; margin-bottom: 8px; z-index: 5;">
                         <button id="mapModeToggleBtn" onclick="toggleMapMode()" style="background: var(--panel-bg); border: 1px solid var(--border-col); padding: 4px 8px; border-radius: 6px; color: var(--text-dim); font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                             <i data-lucide="minimize-2" style="width: 12px; height: 12px;"></i> MAPS PIP
                         </button>
@@ -666,11 +685,18 @@
                 <pre id="system-log-box" style="font-family: monospace; font-size: 11px; height: 150px; overflow-y: auto; background: #000; color: #0f0; padding: 12px; border-radius: 8px; white-space: pre-wrap; word-break: break-all;">System Initialized...</pre>
             </div>
             <div class="card">
-                <div class="flex-between">
-                    <span class="label">CAN BUS DATA (RAW JSON)</span>
-                    <span style="font-size:10px; color:var(--orange);">1 Updates/Sec</span>
+                <div class="flex-between" style="margin-bottom: 8px;">
+                    <span class="label" style="margin:0;">CAN BUS DATA (JSON)</span>
+                    
+                    <!-- Tambahkan Dropdown Filter Log -->
+                    <select id="canLogFilter" onchange="window.canLogFilter = this.value" style="width: auto; padding: 4px 8px; background: var(--panel-bg); color: var(--cyan); border: 1px solid var(--border-col); border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; height: auto;">
+                        <option value="ALL">TAMPILKAN SEMUA</option>
+                        <option value="FAST">FAST JSON (s, r, a..)</option>
+                        <option value="FULL">FULL JSON (speed, rpm..)</option>
+                    </select>
+
                 </div>
-                <pre id="can-log-box" style="font-family: monospace; font-size: 11px; height: 250px; overflow-y: auto; background: #0d1117; border: 1px solid var(--border-col); color: var(--cyan); padding: 12px; border-radius: 8px; margin-top: 10px; white-space: pre-wrap; word-break: break-all;">Waiting for CAN data...</pre>
+                <pre id="can-log-box" style="font-family: monospace; font-size: 11px; height: 250px; overflow-y: auto; background: #0d1117; border: 1px solid var(--border-col); color: var(--cyan); padding: 12px; border-radius: 8px; margin-top: 5px; white-space: pre-wrap; word-break: break-all;">Waiting for CAN data...</pre>
             </div>
         </section>
     </main>
@@ -1183,28 +1209,49 @@
             // GAUGE MODE (Mendukung Format Baru "m" atau Lama "mode")
             if (modeRaw !== undefined) {
                 let modeStr = sanitizeHTML(modeRaw.toString().toUpperCase());
-                const allModes = ['P', 'L', 'M', 'H', 'R', 'STAND', 'S'];
-                allModes.forEach(m => {
-                    let el = document.getElementById('mode-' + m);
-                    if(el) el.classList.remove('active-blue', 'active-green', 'active-red');
-                });
+                
+                // --- PERBAIKAN BUG BRAKE FLICKER ---
+                // Abaikan pembaruan grid jika mode yang masuk adalah tuas rem (BRAKE).
+                // Ini akan mempertahankan status gigi terakhir di layar.
+                if (modeStr !== "BRAKE" && modeStr !== "B") {
+                    
+                    // 1. Bersihkan semua highlight terlebih dahulu
+                    const allModes = ['P', 'L', 'M', 'H', 'R', 'STAND', 'S'];
+                    allModes.forEach(m => {
+                        let el = document.getElementById('mode-' + m);
+                        if(el) el.classList.remove('active-blue', 'active-green', 'active-red');
+                    });
 
-                let modeL = document.getElementById('mode-L'), modeM = document.getElementById('mode-M'), modeH = document.getElementById('mode-H');
-                if(modeL) { modeL.style.opacity = '1'; modeL.innerText = 'L'; }
-                if(modeM) { modeM.innerText = 'M'; }
-                if(modeH) { modeH.style.opacity = '1'; modeH.innerText = 'H'; }
+                    // 2. Kembalikan teks dan visibilitas grid L-M-H ke bentuk standar
+                    let modeL = document.getElementById('mode-L');
+                    let modeM = document.getElementById('mode-M');
+                    let modeH = document.getElementById('mode-H');
+                    
+                    if(modeL) { modeL.style.opacity = '1'; modeL.innerText = 'L'; }
+                    if(modeM) { modeM.innerText = 'M'; }
+                    if(modeH) { modeH.style.opacity = '1'; modeH.innerText = 'H'; }
 
-                if (modeStr === "DRIVE" || modeStr === "D") {
-                    if(modeL) modeL.style.opacity = '0';
-                    if(modeM) { modeM.innerText = 'D'; modeM.classList.add('active-blue'); }
-                    if(modeH) modeH.style.opacity = '0';
-                } else if (modeStr === "PARK" || modeStr === "P") { document.getElementById('mode-P')?.classList.add('active-green'); } 
-                else if (modeStr === "LOW" || modeStr === "1" || modeStr === "L") { document.getElementById('mode-L')?.classList.add('active-blue'); } 
-                else if (modeStr === "MID" || modeStr === "2" || modeStr === "M") { document.getElementById('mode-M')?.classList.add('active-blue'); } 
-                else if (modeStr === "HIGH" || modeStr === "3" || modeStr === "H") { document.getElementById('mode-H')?.classList.add('active-blue'); } 
-                else if (modeStr === "SPORT" || modeStr === "S") { document.getElementById('mode-S')?.classList.add('active-green'); } 
-                else if (modeStr === "REVERSE" || modeStr === "R") { document.getElementById('mode-R')?.classList.add('active-red'); } 
-                else if (modeStr === "STAND" || modeStr === "KICKSTAND") { document.getElementById('mode-STAND')?.classList.add('active-red'); }
+                    // 3. Berikan highlight atau modifikasi grid sesuai mode aktif
+                    if (modeStr === "DRIVE" || modeStr === "D") {
+                        if(modeL) modeL.style.opacity = '0';
+                        if(modeM) { modeM.innerText = 'D'; modeM.classList.add('active-blue'); }
+                        if(modeH) modeH.style.opacity = '0';
+                    } else if (modeStr === "PARK" || modeStr === "P") { 
+                        document.getElementById('mode-P')?.classList.add('active-green'); 
+                    } else if (modeStr === "LOW" || modeStr === "1" || modeStr === "L") { 
+                        document.getElementById('mode-L')?.classList.add('active-blue'); 
+                    } else if (modeStr === "MID" || modeStr === "2" || modeStr === "M") { 
+                        document.getElementById('mode-M')?.classList.add('active-blue'); 
+                    } else if (modeStr === "HIGH" || modeStr === "3" || modeStr === "H") { 
+                        document.getElementById('mode-H')?.classList.add('active-blue'); 
+                    } else if (modeStr === "SPORT" || modeStr === "S") { 
+                        document.getElementById('mode-S')?.classList.add('active-green'); 
+                    } else if (modeStr === "REVERSE" || modeStr === "R") { 
+                        document.getElementById('mode-R')?.classList.add('active-red'); 
+                    } else if (modeStr === "STAND" || modeStr === "KICKSTAND") { 
+                        document.getElementById('mode-STAND')?.classList.add('active-red'); 
+                    }
+                }
             }
 
             // DASH TRIP
@@ -1393,8 +1440,11 @@
             if (document.getElementById('logs').classList.contains('active')) logBox.scrollTop = logBox.scrollHeight;
         }
 
+        // Inisialisasi variabel filter log secara global
+        window.canLogFilter = "ALL";
+
         // ==========================================
-        //  PENGAYAAN PARSER HANDLER (Mencegah Crash)
+        //  PENGAYAAN PARSER HANDLER DENGAN FILTER LOG
         // ==========================================
         function handleNotifications(event) {
             let value = new TextDecoder().decode(event.target.value); 
@@ -1406,17 +1456,36 @@
                 for (let line of lines) { 
                     line = line.trim();
                     if (line !== "") { 
-                        logCanData("RAW: " + line);
                         try { 
                             let data = JSON.parse(line); 
                             
                             // FILTER KHUSUS: Abaikan payload setup atau status dari modul Keyless Dev 1 
-                            // (Mencegah parse error)
                             if (data.scan_status || data.disc) continue; 
                             
+                            // --- LOGIKA FILTER LOG CAN BUS (PERBAIKAN) ---
+                            // Menggunakan key "type" yang disuntikkan langsung oleh firmware ESP32
+                            let isFast = (data.type === "fast");
+                            let isFull = (data.type === "full");
+                            
+                            let showLog = true;
+                            if (window.canLogFilter === "FAST" && !isFast) showLog = false;
+                            if (window.canLogFilter === "FULL" && !isFull) showLog = false;
+                            
+                            // Hanya cetak ke kotak log jika lolos filter
+                            if (showLog) {
+                                logCanData("RAW: " + line);
+                            }
+                            
+                            // Selalu perbarui dashboard terlepas dari apa yang ditampilkan di log
                             updateDashboard(data); 
-                        } 
-                        catch (e) { logSystem("[ERROR PARSE JSON] " + e.message); }
+                            
+                        } catch (e) { 
+                            // Jika string tidak bisa di-parse sebagai JSON, tampilkan saja jika mode "ALL"
+                            if (window.canLogFilter === "ALL") {
+                                logCanData("RAW: " + line);
+                            }
+                            logSystem("[ERROR PARSE JSON] " + e.message); 
+                        }
                     } 
                 }
             }
