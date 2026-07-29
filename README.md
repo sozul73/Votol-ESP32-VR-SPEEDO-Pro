@@ -4,7 +4,7 @@ Votol Dash Pro adalah antarmuka web modern dan responsif berbasis Progressive We
 
 Dashboard ini dapat dijalankan langsung dari browser web pendukung (seperti Chrome) dan dapat diinstal ke layar utama (Home Screen) HP sebagai aplikasi native yang dapat berjalan 100% Offline.
 
-https://sozul73.github.io/Votol-ESP32-VR-SPEEDO-Pro/votol-VR-dash.html
+https://sozul73.github.io/Votol-ESP32-VR-SPEEDO-Pro/
 
 ✨ Fitur Utama
 📊 Real-time Dashboard: Menampilkan Speedometer (KM/H), RPM, dan Status Mode Berkendara (PARK, MID, SPORT, DRIVE) tanpa hambatan (zero-lag).
