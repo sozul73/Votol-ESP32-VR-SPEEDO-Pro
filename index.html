@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Votol-ESP32-VR-SPEEDO Pro v1 </title>
+    <title>Votol-ESP32-VR-SPEEDO Pro v2</title>
     <!-- PWA Setup -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0d1117">
@@ -138,8 +138,8 @@
         .mode-grid-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 5px 25px; /* Mengurangi gap vertikal antar baris */
-            margin-top: -10px; /* Menarik grid mendekat ke gauge di mode portrait */
+            gap: 5px 25px; 
+            margin-top: -10px; 
             z-index: 10;
             position: relative;
         }
@@ -155,10 +155,9 @@
             color: var(--text-dim);
             border-radius: 8px;
             transition: background-color 0.3s ease, color 0.3s ease;
-            margin: 0 auto; /* Memastikan setiap item rata tengah */
+            margin: 0 auto; 
         }
 
-        /* Warna Highlight Khusus */
         .mode-item.active-blue { background-color: #58a6ff; color: white; }
         .mode-item.active-green { background-color: #3fb950; color: white; }
         .mode-item.active-red { background-color: #f85149; color: white; }
@@ -176,51 +175,38 @@
             border-radius: 6px;
         }
 
-        .power-bar-fill.discharge {
-            top: 0; bottom: 0; left: 30%; right: auto; width: var(--power-size, 0%);
-        }
-        .power-bar-fill.regen {
-            top: 0; bottom: 0; right: 70%; left: auto; width: var(--power-size, 0%);
-        }
+        .power-bar-fill.discharge { top: 0; bottom: 0; left: 30%; right: auto; width: var(--power-size, 0%); }
+        .power-bar-fill.regen { top: 0; bottom: 0; right: 70%; left: auto; width: var(--power-size, 0%); }
         
         .landscape-only { display: none !important; }
         .temp-grid-3 { display: flex; justify-content: space-around; text-align: center; width: 100%; margin-top: 10px;}
         
-	/* --- LANDSCAPE ORIENTATION STYLES --- */
+	    /* --- LANDSCAPE ORIENTATION STYLES --- */
         @media (orientation: landscape) and (min-height: 300px) {
             #dash.page-content.active { 
                 height: calc(100vh - 65px); 
-                /* Padding bawah 40px berfungsi sebagai zona aman mutlak untuk navigation bar */
                 padding: 10px 15px 40px 15px; 
                 overflow: hidden; 
                 display: flex; 
                 align-items: center; 
             }
             .dash-layout {
-                /* Menyesuaikan proporsi kolom agar lebih imbang */
                 display: grid; grid-template-columns: 1fr 0.8fr 70px 1.2fr; gap: 15px; align-items: center;
                 height: 100%; width: 100%; max-width: 1400px; margin: 0 auto;
             }
 
-            /* GAUGE UTAMA - Diperkecil maksimalnya agar tidak tumpah */
             .main-gauge-section { justify-content: center; }
             .main-gauge { width: 100%; max-width: 260px; height: auto; aspect-ratio: 1/1; margin: 0 auto; }
             #speed { font-size: clamp(35px, 8vh, 75px); }
 
-            /* Tarik paksa grid gigi ke atas masuk ke dalam SVG Speedometer */
-            .mode-grid-container { 
-                gap: 4px 20px; 
-                margin-top: -45px !important; 
-            }
+            .mode-grid-container { gap: 4px 20px; margin-top: -45px !important; }
             .mode-item { width: 32px; height: 32px; font-size: 16px; }
             
-            /* GAUGE KECIL - Diperkecil maksimalnya dan dirapatkan */
             .sub-gauges-container { flex-direction: column; gap: 8px; margin-top: 0; justify-content: center; height: 100%; }
             .sub-gauge { width: 100%; max-width: 130px; height: auto; aspect-ratio: 1/1; margin: 0 auto; }
             .sub-val { font-size: clamp(16px, 4vh, 24px); }
             .sub-label { margin-bottom: 0; }
             
-            /* POWER METER - Dibatasi tinggi maksimal 250px */
             #dash-power-card {
                 display: flex !important; flex-direction: column; align-items: center; 
                 justify-content: center; height: 100%; max-height: 250px; margin: 0 auto; padding: 10px 5px;
@@ -230,21 +216,16 @@
             #dash-power-card .power-bar-container { width: 30px; max-width: 30px; height: 100%; min-height: 80px; margin: 0 auto; }
             #dash-power-val-landscape { font-size: 14px !important; margin-top: 5px; }
             
-            .power-bar-fill.discharge { 
-                left: 0; right: 0; width: 100% !important; bottom: 30%; top: auto; height: var(--power-size, 0%);
-            }
-            .power-bar-fill.regen { 
-                left: 0; right: 0; width: 100% !important; top: 70%; bottom: auto; height: var(--power-size, 0%); 
-            }
+            .power-bar-fill.discharge { left: 0; right: 0; width: 100% !important; bottom: 30%; top: auto; height: var(--power-size, 0%); }
+            .power-bar-fill.regen { left: 0; right: 0; width: 100% !important; top: 70%; bottom: auto; height: var(--power-size, 0%); }
             
-            /* STATS GRID - Padding, font, dan gap diperkecil */
             .stats-group { display: flex; flex-direction: column; gap: 8px; justify-content: center; height: 100%;}
             .info-grid-2 { grid-template-columns: 1fr; margin-bottom: 0; gap: 8px;}
             .card.mini { padding: 8px; }
             .card.mini b { font-size: 16px; }
             .temp-card { margin-bottom: 0; padding: 8px !important; }
             .temp-grid-3 { flex-direction: row; gap: 5px; margin-top: 2px;} 
-            .stat-box b { font-size: 14px !important; } /* Font suhu dikecilkan agar aman */
+            .stat-box b { font-size: 14px !important; } 
             .stat-box small.label { font-size: 9px !important; }
             .relay-text { display: inline-block !important; font-size: 11px; font-weight: bold; }
         }
@@ -252,62 +233,36 @@
         /* --- MAP PIP MODE STYLES --- */
         #range-trip-grid {
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), gap 0.3s;
-            width: 100%;
-            transform-origin: left center;
+            width: 100%; transform-origin: left center;
         }
 
-        #range-trip-grid.map-mode-active {
-            width: 45%; /* Mengecilkan grid menjadi 45%, menyisakan 55% ruang di kanan untuk Maps */
-            gap: 6px !important; /* Jarak antar kartu lebih rapat */
-        }
-
-        #range-trip-grid.map-mode-active .card.mini {
-            padding: 8px 10px !important;
-            align-items: flex-start; /* Teks rata kiri, tidak lagi di tengah */
-        }
-
-        #range-trip-grid.map-mode-active .card.mini i {
-            display: none; /* Sembunyikan ikon Lucide agar hemat ruang vertikal */
-        }
-
-        #range-trip-grid.map-mode-active .label {
-            font-size: 9px;
-            margin-bottom: 2px !important;
-        }
-
-        #range-trip-grid.map-mode-active b {
-            font-size: 15px !important;
-        }
+        #range-trip-grid.map-mode-active { width: 45%; gap: 6px !important; }
+        #range-trip-grid.map-mode-active .card.mini { padding: 8px 10px !important; align-items: flex-start; }
+        #range-trip-grid.map-mode-active .card.mini i { display: none; }
+        #range-trip-grid.map-mode-active .label { font-size: 9px; margin-bottom: 2px !important; }
+        #range-trip-grid.map-mode-active b { font-size: 15px !important; }
 
         /* --- TAP-TO-OPEN BOTTOM NAV --- */
         .bottom-nav { 
             position: fixed; bottom: 0; width: 100%; background: var(--nav-bg); backdrop-filter: blur(10px); 
             display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border-col); 
-            z-index: 100; transform: translateY(100%); /* Disembunyikan total ke bawah layar */
+            z-index: 100; transform: translateY(100%); 
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        /* Kelas untuk memunculkan navigasi via JavaScript */
-        .bottom-nav.show {
-            transform: translateY(0); 
-        }
+        .bottom-nav.show { transform: translateY(0); }
 
-        /* Desain "pegangan" / handle tab yang mengintip di bawah layar */
         .nav-handle {
             position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
             width: 80px; height: 28px; 
             display: flex; align-items: center; justify-content: center; cursor: pointer;
             background: var(--nav-bg);
             border-radius: 12px 12px 0 0;
-            border: 1px solid var(--border-col);
-            border-bottom: none;
+            border: 1px solid var(--border-col); border-bottom: none;
             backdrop-filter: blur(10px);
         }
         
-        /* Garis pil di dalam handle */
-        .nav-handle::after {
-            content: ''; width: 35px; height: 4px; background: var(--text-dim); border-radius: 2px;
-        }
+        .nav-handle::after { content: ''; width: 35px; height: 4px; background: var(--text-dim); border-radius: 2px; }
         
         .nav-item { color: var(--text-dim); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: bold; flex: 1;}
         .nav-item.active { color: var(--cyan); transform: translateY(-3px); }
@@ -331,20 +286,16 @@
 <body>
     <header class="top-header">
         <div class="status-bar" style="flex-direction: row; gap: 20px; align-items: center;">
-            <!-- Group Bluetooth dan Jam -->
             <div style="display: flex; flex-direction: column; gap: 4px;">
                 <span id="conn-status"><i data-lucide="circle-dashed" style="width: 16px; height: 16px;"></i> OFFLINE</span> 
                 <span id="clock"><i data-lucide="clock" style="width: 14px; height: 14px;"></i> 00:00</span>
             </div>
             
-            <!-- Group Header Relay Indicator -->
             <div id="header-relay-indicator" style="display: none;">
-                <!-- UNLOCKED STATE (Tergembok Buka - Hijau) -->
                 <div id="hr-unlocked" style="display: none; align-items: center; gap: 5px; color: var(--green);">
                     <i data-lucide="unlock" style="width: 18px; height: 18px;"></i>
                     <span class="relay-text">TERBUKA (UNLOCK)</span>
                 </div>
-                <!-- LOCKED STATE (Tergembok Tutup - Merah) -->
                 <div id="hr-locked" style="display: flex; align-items: center; gap: 5px; color: var(--accent-red);">
                     <i data-lucide="lock" style="width: 18px; height: 18px;"></i>
                     <span class="relay-text">TERKUNCI (LOCK)</span>
@@ -362,15 +313,11 @@
         <!-- TAB 1: DASHBOARD -->
         <section id="dash" class="page-content active">
             <div class="dash-layout">
-                
                 <div class="main-gauge-section">
                     <div class="gauge-wrapper main-gauge">
                         <svg viewBox="0 0 240 240" class="gauge-svg">
-                            <!-- Background arc: 270 degrees from 135° to 405° -->
                             <path d="M 49.3 190.7 A 100 100 0 1 1 190.7 190.7" fill="none" stroke="var(--gauge-bg)" stroke-width="14" stroke-linecap="round" />
-                            <!-- Tick marks -->
                             <path d="M 63.4 176.6 A 80 80 0 1 1 176.6 176.6" fill="none" stroke="var(--gauge-tick)" stroke-width="4" stroke-dasharray="4 21" stroke-linecap="round" />
-                            <!-- Active arc: total circumference = 2*PI*100 = 628.32, 270° = 471.24 -->
                             <path id="speed-arc" d="M 49.3 190.7 A 100 100 0 1 1 190.7 190.7" fill="none" stroke="var(--cyan)" stroke-width="14" stroke-dasharray="471.24" stroke-dashoffset="471.24" stroke-linecap="round" style="transition: stroke-dashoffset 0.3s ease-out;" />
                         </svg>
                         <div class="gauge-center">
@@ -380,20 +327,14 @@
                         </div>
                     </div>
                     <div class="mode-grid-container" id="mode-grid">
-                        <!-- Baris 1: Kosong, P, Kosong -->
                         <div></div>
                         <div class="mode-item" id="mode-P">P</div>
                         <div></div>
-
-                        <!-- Baris 2: L, M, H -->
                         <div class="mode-item" id="mode-L">L</div>
                         <div class="mode-item" id="mode-M">M</div>
                         <div class="mode-item" id="mode-H">H</div>
-    
-                        <!-- Baris 3: R, Standar, S -->
                         <div class="mode-item" id="mode-R">R</div>
                         <div class="mode-item" id="mode-STAND">
-                            <!-- SVG Ikon Standar Samping -->
                             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                                 <rect x="4" y="19" width="8" height="2" />
                                 <polygon points="19,2 21,3 12,19 9,19" />
@@ -409,7 +350,6 @@
                         <svg viewBox="0 0 160 160" class="gauge-svg">
                             <path d="M 34 126 A 65 65 0 1 1 126 126" fill="none" stroke="var(--gauge-bg)" stroke-width="10" stroke-linecap="round" />
                             <path d="M 44.6 115.3 A 50 50 0 1 1 115.3 115.3" fill="none" stroke="var(--gauge-tick)" stroke-width="3" stroke-dasharray="3 19.5" stroke-linecap="round" />
-                            <!-- 270° arc: circumference = 2*PI*65 = 408.41, 270° = 306.3 -->
                             <path id="current-arc" d="M 34 126 A 65 65 0 1 1 126 126" fill="none" stroke="var(--current-color)" stroke-width="10" stroke-dasharray="306.3" stroke-dashoffset="306.3" stroke-linecap="round" style="transition: stroke-dashoffset 0.3s ease-out;" />
                         </svg>
                         <div class="gauge-center">
@@ -437,25 +377,20 @@
                         <span class="label" style="margin:0;">POWER</span>
                         <b id="dash-power-val" style="color: var(--text-main); font-size: 18px;">0 W</b>
                     </div>
-                    
                     <span class="label landscape-only">POWER</span>
-                    
                     <div class="power-bar-container">
                         <div id="dash-power-bar" class="power-bar-fill discharge"></div>
                     </div>
-                    
                     <b id="dash-power-val-landscape" class="landscape-only" style="color: var(--text-main); font-size: 16px;">0 W</b>
                 </div>
 
                 <div class="stats-group">
-                    <!-- Tombol Toggle Map PIP Mode -->
                     <div style="display: flex; justify-content: flex-start; margin-bottom: 8px; z-index: 5;">
                         <button id="mapModeToggleBtn" onclick="toggleMapMode()" style="background: var(--panel-bg); border: 1px solid var(--border-col); padding: 4px 8px; border-radius: 6px; color: var(--text-dim); font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                             <i data-lucide="minimize-2" style="width: 12px; height: 12px;"></i> MAPS PIP
                         </button>
                     </div>
 
-                    <!-- Tambahkan ID range-trip-grid -->
                     <div class="info-grid-2" id="range-trip-grid">
                         <div class="card mini">
                             <i data-lucide="map-pin" style="color: var(--cyan); width: 20px; height: 20px;"></i>
@@ -487,7 +422,6 @@
                         </div>
                     </div>
                 </div>
-                
             </div>
         </section>
 
@@ -559,7 +493,6 @@
 
         <!-- TAB 4: SETTINGS -->
         <section id="settings" class="page-content">
-            
             <!-- 1. SPLASHSCREEN SETTING -->
             <div class="card">
                 <span class="label">SPLASHSCREEN SETTING</span>
@@ -577,7 +510,6 @@
             <div class="card">
                 <span class="label">SPEED WARNING SETTING</span>
                 <div style="margin-top:15px; display:flex; flex-direction:column; gap:15px;">
-                    
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#0d1117; padding:12px; border-radius:8px; border:1px solid #30363d;">
                         <label style="display:flex; align-items:center; justify-content:space-between; font-size:14px; font-weight:bold; color:white; cursor:pointer; flex:1; margin-right:15px;">
                             <span>OLED WARNING</span>
@@ -588,7 +520,6 @@
                             <button onclick="sendAlarmOled()" style="background:var(--cyan); border:none; padding:8px 12px; border-radius:6px; color:white; font-weight:bold; cursor:pointer;">SET</button>
                         </div>
                     </div>
-
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#0d1117; padding:12px; border-radius:8px; border:1px solid #30363d;">
                         <label style="display:flex; align-items:center; justify-content:space-between; font-size:14px; font-weight:bold; color:white; cursor:pointer; flex:1; margin-right:15px;">
                             <span>BUZZER WARNING</span>
@@ -599,7 +530,6 @@
                             <button onclick="sendAlarmBuzzer()" style="background:var(--orange); border:none; padding:8px 12px; border-radius:6px; color:white; font-weight:bold; cursor:pointer;">SET</button>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -630,7 +560,6 @@
                 </div>
                 
                 <div style="margin-top:15px; display:flex; flex-direction:column; gap:12px;">
-                    <!-- Aktifkan Fungsi Keyless -->
                     <div style="background:#0d1117; padding:12px; border-radius:8px; border:1px solid #30363d;">
                         <label style="display:flex; justify-content:space-between; align-items:center; font-size:14px; font-weight:bold; color:white; width:100%; cursor:pointer;">
                             <span>Aktifkan Fitur Smart Keyless</span>
@@ -638,7 +567,6 @@
                         </label>
                     </div>
 
-                    <!-- Jarak Sensitivitas -->
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#0d1117; padding:12px; border-radius:8px; border:1px solid #30363d;">
                         <span style="font-size:14px; font-weight:bold; color:white;">Sensitivitas Jarak (RSSI)</span>
                         <select id="keylessRssiInput" onchange="sendKeylessRssi()" style="padding:8px; background:#161b22; color:white; border:1px solid #30363d; border-radius:6px; font-size:12px; cursor:pointer; width: auto;">
@@ -650,7 +578,6 @@
                         </select>
                     </div>
 
-                    <!-- Daftar Kunci Terdaftar -->
                     <div style="background:#0d1117; padding:12px; border-radius:8px; border:1px solid #30363d; display:flex; flex-direction:column; gap:10px;">
                         <span style="font-size:11px; color:var(--text-dim); font-weight:bold;">DAFTAR SMART TAG TERDAFTAR</span>
                         
@@ -670,7 +597,6 @@
                         </div>
                     </div>
 
-                    <!-- Metode A (Menggunakan Native Web Bluetooth API) -->
                     <div style="border-top:1px dashed #30363d; padding-top:15px; margin-top:10px;">
                         <span class="label" style="color:var(--orange); display:block; margin-bottom:8px;">METODE A: SCAN DENGAN SMARTPHONE</span>
                         <button onclick="scanForNearbyDevices()" id="scanBleBtn" style="width: 100%; background: var(--purple); border: none; padding: 12px; border-radius: 8px; font-weight: bold; color: white; cursor: pointer;">PINDAI PERANGKAT DARI HP</button>
@@ -681,7 +607,6 @@
                         <div id="scan-results-container" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;"></div>
                     </div>
 
-                    <!-- Metode B -->
                     <div style="border-top:1px dashed #30363d; padding-top:15px; margin-top:10px;">
                         <span class="label" style="color:var(--cyan); display:block; margin-bottom:8px;">METODE B: INPUT MAC MANUAL</span>
                         <div style="display:flex; flex-direction:column; gap:10px; background:#0d1117; padding:12px; border-radius:8px; border:1px solid #30363d;">
@@ -701,7 +626,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -733,7 +657,6 @@
                     </div>
                 </div>
             </div>
-
         </section>
 
         <!-- TAB 5: LOGS -->
@@ -754,7 +677,6 @@
 
     <nav class="bottom-nav" id="bottomNav">
         <div class="nav-handle" onclick="toggleNav()"></div>
-        
         <div class="nav-item active" onclick="loadPage('dash', this)"><i data-lucide="gauge"></i> Dash</div>
         <div class="nav-item" onclick="loadPage('battery', this)"><i data-lucide="battery-charging"></i> Battery</div>
         <div class="nav-item" onclick="loadPage('trip', this)"><i data-lucide="route"></i> Trip</div>
@@ -779,10 +701,9 @@
             return div.innerHTML;
         }
 
-        // Battery capacity auto-synced from BMS data (default 52Ah)
         let batteryCapacity = 52; 
-
         let isLightMode = false;
+
         function toggleTheme() {
             isLightMode = !isLightMode;
             if(isLightMode) {
@@ -838,24 +759,13 @@
             document.getElementById(pageId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
-
             document.getElementById('bottomNav').classList.remove('show');
             
-            // Proper chart lifecycle management
             if (pageId !== 'trip') {
-                if (speedChart) {
-                    speedChart.destroy();
-                    speedChart = null;
-                }
-                if (currentChart) {
-                    currentChart.destroy();
-                    currentChart = null;
-                }
+                if (speedChart) { speedChart.destroy(); speedChart = null; }
+                if (currentChart) { currentChart.destroy(); currentChart = null; }
             } else {
-                // Re-initialize charts when switching to trip tab
-                if (!speedChart || !currentChart) {
-                    initCharts();
-                }
+                if (!speedChart || !currentChart) { initCharts(); }
             }
         }
 
@@ -864,13 +774,8 @@
         function initCharts() {
             const ctxSpeed = document.getElementById('speedChart')?.getContext('2d');
             const ctxCurrent = document.getElementById('currentChart')?.getContext('2d');
-            
-            if (ctxSpeed && !speedChart) {
-                speedChart = new Chart(ctxSpeed, chartConfig('SPEED (KM/H)', '#58a6ff'));
-            }
-            if (ctxCurrent && !currentChart) {
-                currentChart = new Chart(ctxCurrent, chartConfig('CURRENT (A)', '#f85149'));
-            }
+            if (ctxSpeed && !speedChart) speedChart = new Chart(ctxSpeed, chartConfig('SPEED (KM/H)', '#58a6ff'));
+            if (ctxCurrent && !currentChart) currentChart = new Chart(ctxCurrent, chartConfig('CURRENT (A)', '#f85149'));
         }
 
         Chart.defaults.color = '#8b949e';
@@ -890,7 +795,6 @@
         let currentChart = null;
         initCharts();
 
-        // BLE LOGIC
         const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
         const TX_CHAR_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
         const RX_CHAR_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a9"; 
@@ -918,18 +822,14 @@
                 bleRxCharacteristic = await service.getCharacteristic(RX_CHAR_UUID);
                 
                 isConnected = true; autoReconnect = true; 
-                
                 let btn = document.getElementById('connectBtn');
                 btn.innerHTML = '<i data-lucide="bluetooth-off" style="width: 16px; height: 16px;"></i> DISCONNECT'; btn.classList.add('connected');
                 let st = document.getElementById('conn-status');
                 st.innerHTML = '<i data-lucide="bluetooth-connected" style="width: 16px; height: 16px;"></i> CONNECTED'; st.classList.add('connected');
                 lucide.createIcons();
                 log("Berhasil terkoneksi!"); 
-                clearTimeout(reconnectTimeout);
-                reconnectTimeout = null;
-            } catch (error) { 
-                log("Gagal menyambung: " + error); 
-            }
+                clearTimeout(reconnectTimeout); reconnectTimeout = null;
+            } catch (error) { log("Gagal menyambung: " + error); }
         }
 
         function disconnect() {
@@ -970,8 +870,7 @@
                 st.innerHTML = '<i data-lucide="bluetooth-connected" style="width: 16px; height: 16px;"></i> CONNECTED'; st.classList.add('connected');
                 lucide.createIcons();
                 log("Berhasil auto-reconnect!");
-                clearTimeout(reconnectTimeout);
-                reconnectTimeout = null;
+                clearTimeout(reconnectTimeout); reconnectTimeout = null;
             } catch(e) {
                 log("Auto-reconnect gagal, mencoba lagi...");
                 clearTimeout(reconnectTimeout);
@@ -979,7 +878,6 @@
             }
         }
 
-        // Updated helper function for BLE writes with SUCCESS alert feedback
         async function safeBleWrite(command, successMsg, errorMsg) {
             if (!bleRxCharacteristic) {
                 logSystem("Bluetooth belum terkoneksi!");
@@ -988,17 +886,14 @@
             }
             try {
                 await bleRxCharacteristic.writeValue(new TextEncoder().encode(command));
-                logSystem(successMsg);
-                alert(successMsg);
+                logSystem(successMsg); alert(successMsg);
                 return true;
             } catch (e) {
-                logSystem(errorMsg + ": " + e);
-                alert(errorMsg + "! Silahkan coba lagi. Error: " + e.message);
+                logSystem(errorMsg + ": " + e); alert(errorMsg + "! Silahkan coba lagi. Error: " + e.message);
                 return false;
             }
         }
 
-        /* ----- FUNGSI KIRIM SETTINGS DENGAN POP-UP ALERT ----- */
         async function sendTripCalibration() {
             if(!bleRxCharacteristic) { logSystem("Bluetooth belum konek!"); alert("Bluetooth belum konek!"); return; }
             let real = parseFloat(document.getElementById('realTrip').value);
@@ -1110,13 +1005,11 @@
             try {
                 logSystem("Memulai pemindaian BLE native dari browser...");
                 
-                const device = await navigator.bluetooth.requestDevice({
-                    acceptAllDevices: true
-                });
-
+                const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+                
                 const safeDeviceName = sanitizeHTML(device.name || 'Unknown Device');
                 const safeDeviceId = sanitizeHTML(device.id);
-
+                
                 const scanBox = document.getElementById('scan-list-box');
                 const scanContainer = document.getElementById('scan-results-container');
                 
@@ -1147,8 +1040,6 @@
             }
         }
 
-        /* ------------------------------------- */
-
         function extractNumber(val) {
             if (val === undefined || val === null) return undefined;
             if (typeof val === 'number') return val;
@@ -1165,32 +1056,30 @@
             return undefined;
         }
 
-        function searchJSON(obj, targetKey) {
-            if (!obj || typeof obj !== 'object') return undefined;
-            let target = targetKey.toLowerCase(), result = undefined;
+        function getBestValue(obj, keys) {
+            if(!obj || typeof obj !== 'object') return undefined;
+            let result = undefined;
             function search(o) {
                 if (!o || typeof o !== 'object') return;
-                for (let k in o) { if (k.toLowerCase() === target) { result = o[k]; return; } }
+                for (let k in o) { if (keys.map(x=>x.toLowerCase()).includes(k.toLowerCase())) { result = o[k]; return; } }
                 for (let k in o) { if (typeof o[k] === 'object' && o[k] !== null) { search(o[k]); if (result !== undefined) return; } }
             }
-            search(obj); return result;
+            search(obj); 
+            let num = extractNumber(result); return isNaN(num) ? undefined : num;
         }
 
-        function getBestValue(obj, keys) {
-            for (let k of keys) {
-                let found = searchJSON(obj, k);
-                if (found !== undefined) { let num = extractNumber(found); if (num !== undefined && !isNaN(num)) return num; }
-            }
-            return undefined;
-        }
-
+        // ==========================================
+        //  FUNGSI PEMBARUAN DASHBOARD (UPDATED)
+        // ==========================================
         function updateDashboard(data) {
-            let speed = extractNumber(data.speed) || 0;
-            let rpm = extractNumber(data.rpm) || 0;
-            let soc = extractNumber(data.soc) || 0;
-            let rawAmps = extractNumber(data.amps) || 0; 
-            let volts = extractNumber(data.volts) || 0;
-            let rawPower = extractNumber(data.power);
+            // EKSTRAK DATA DASAR (Dukung Format Lama dan Baru/Singkat)
+            let speed = extractNumber(data.s ?? data.speed) || 0;
+            let rpm = extractNumber(data.r ?? data.rpm) || 0;
+            let soc = extractNumber(data.sc ?? data.soc) || 0;
+            let rawAmps = extractNumber(data.a ?? data.amps) || 0; 
+            let volts = extractNumber(data.v ?? data.volts) || 0;
+            let rawPower = extractNumber(data.p ?? data.power);
+            let modeRaw = data.m ?? data.mode;
 
             // GAUGE CURRENT PILL
             let curText = document.getElementById('dash-current-val');
@@ -1237,20 +1126,14 @@
             }
             
             if(dashPowerBar) {
-                let maxDischarge = 6000; 
-                let maxRegen = 4000;     
-                
+                let maxDischarge = 6000; let maxRegen = 4000;     
                 if (rawPower <= -1) { 
-                    let powerPct = Math.min((displayPower / maxDischarge) * 100, 100);
-                    let visualPct = powerPct * 0.7; 
                     dashPowerBar.className = "power-bar-fill discharge";
-                    dashPowerBar.style.setProperty('--power-size', visualPct + '%');
+                    dashPowerBar.style.setProperty('--power-size', (Math.min((displayPower / maxDischarge) * 100, 100) * 0.7) + '%');
                     dashPowerBar.style.setProperty('--bar-color', 'var(--cyan)');
                 } else if (rawPower >= 1) {
-                    let powerPct = Math.min((displayPower / maxRegen) * 100, 100);
-                    let visualPct = powerPct * 0.3; 
                     dashPowerBar.className = "power-bar-fill regen";
-                    dashPowerBar.style.setProperty('--power-size', visualPct + '%');
+                    dashPowerBar.style.setProperty('--power-size', (Math.min((displayPower / maxRegen) * 100, 100) * 0.3) + '%');
                     dashPowerBar.style.setProperty('--bar-color', 'var(--green)');
                 } else {
                     dashPowerBar.style.setProperty('--power-size', '0%');
@@ -1260,61 +1143,40 @@
             // GAUGE SPEED
             document.getElementById('speed').innerText = speed;
             document.getElementById('rpm-val').innerText = rpm; 
-            let maxSpeed = 120; 
-            let speedOffset = 471.24 * (1 - Math.min(Math.max(speed, 0), maxSpeed) / maxSpeed);
             let speedArc = document.getElementById('speed-arc');
-            if(speedArc) speedArc.style.strokeDashoffset = speedOffset;
+            if(speedArc) speedArc.style.strokeDashoffset = 471.24 * (1 - Math.min(Math.max(speed, 0), 120) / 120);
 
             // GAUGE BATTERY
             let batText = document.getElementById('dash-battery-val');
             let batArc = document.getElementById('battery-arc');
             if(batText) batText.innerText = Math.round(soc);
-            if(batArc) {
-                let socOffset = 306.3 * (1 - Math.min(soc, 100) / 100);
-                batArc.style.strokeDashoffset = socOffset;
-            }
+            if(batArc) batArc.style.strokeDashoffset = 306.3 * (1 - Math.min(soc, 100) / 100);
 
-            // GAUGE MODE (NEW GRID LOGIC 3x3)
-            if (data.mode) {
-                let modeStr = sanitizeHTML(data.mode.toString().toUpperCase());
-                
-                // 1. Bersihkan semua highlight terlebih dahulu
+            // GAUGE MODE (Mendukung Format Baru "m" atau Lama "mode")
+            if (modeRaw !== undefined) {
+                let modeStr = sanitizeHTML(modeRaw.toString().toUpperCase());
                 const allModes = ['P', 'L', 'M', 'H', 'R', 'STAND', 'S'];
                 allModes.forEach(m => {
                     let el = document.getElementById('mode-' + m);
-                    if(el) { el.classList.remove('active-blue', 'active-green', 'active-red'); }
+                    if(el) el.classList.remove('active-blue', 'active-green', 'active-red');
                 });
 
-                // 2. Kembalikan teks dan visibilitas grid L-M-H ke bentuk standar
-                let modeL = document.getElementById('mode-L');
-                let modeM = document.getElementById('mode-M');
-                let modeH = document.getElementById('mode-H');
-                
+                let modeL = document.getElementById('mode-L'), modeM = document.getElementById('mode-M'), modeH = document.getElementById('mode-H');
                 if(modeL) { modeL.style.opacity = '1'; modeL.innerText = 'L'; }
                 if(modeM) { modeM.innerText = 'M'; }
                 if(modeH) { modeH.style.opacity = '1'; modeH.innerText = 'H'; }
 
-                // 3. Berikan highlight atau modifikasi grid sesuai mode aktif
                 if (modeStr === "DRIVE" || modeStr === "D") {
-                    // Sembunyikan L & H, ubah tulisan M menjadi D
                     if(modeL) modeL.style.opacity = '0';
                     if(modeM) { modeM.innerText = 'D'; modeM.classList.add('active-blue'); }
                     if(modeH) modeH.style.opacity = '0';
-                } else if (modeStr === "PARK" || modeStr === "P") {
-                    document.getElementById('mode-P')?.classList.add('active-green'); 
-                } else if (modeStr === "LOW" || modeStr === "1" || modeStr === "L") {
-                    document.getElementById('mode-L')?.classList.add('active-blue');
-                } else if (modeStr === "MID" || modeStr === "2" || modeStr === "M") {
-                    document.getElementById('mode-M')?.classList.add('active-blue');
-                } else if (modeStr === "HIGH" || modeStr === "3" || modeStr === "H") {
-                    document.getElementById('mode-H')?.classList.add('active-blue');
-                } else if (modeStr === "SPORT" || modeStr === "S") {
-                    document.getElementById('mode-S')?.classList.add('active-green');
-                } else if (modeStr === "REVERSE" || modeStr === "R") {
-                    document.getElementById('mode-R')?.classList.add('active-red');
-                } else if (modeStr === "STAND" || modeStr === "KICKSTAND") {
-                    document.getElementById('mode-STAND')?.classList.add('active-red');
-                }
+                } else if (modeStr === "PARK" || modeStr === "P") { document.getElementById('mode-P')?.classList.add('active-green'); } 
+                else if (modeStr === "LOW" || modeStr === "1" || modeStr === "L") { document.getElementById('mode-L')?.classList.add('active-blue'); } 
+                else if (modeStr === "MID" || modeStr === "2" || modeStr === "M") { document.getElementById('mode-M')?.classList.add('active-blue'); } 
+                else if (modeStr === "HIGH" || modeStr === "3" || modeStr === "H") { document.getElementById('mode-H')?.classList.add('active-blue'); } 
+                else if (modeStr === "SPORT" || modeStr === "S") { document.getElementById('mode-S')?.classList.add('active-green'); } 
+                else if (modeStr === "REVERSE" || modeStr === "R") { document.getElementById('mode-R')?.classList.add('active-red'); } 
+                else if (modeStr === "STAND" || modeStr === "KICKSTAND") { document.getElementById('mode-STAND')?.classList.add('active-red'); }
             }
 
             // DASH TRIP
@@ -1324,118 +1186,73 @@
                 document.getElementById('trip-dist-large').innerText = (data.trip.km !== undefined ? data.trip.km : 0).toFixed(1) + " km";
                 document.getElementById('avg-wh').innerText = (data.trip.avg !== undefined ? data.trip.avg : 0).toFixed(1);
             }
-            if (data.temps) {
-                document.getElementById('t-ecu').innerText = (data.temps.ctrl !== undefined ? data.temps.ctrl : 0) + "°C";
-                document.getElementById('t-motor').innerText = (data.temps.motor !== undefined ? data.temps.motor : 0) + "°C";
-                document.getElementById('t-batt').innerText = (data.temps.batt !== undefined ? data.temps.batt : 0) + "°C";
+            
+            // TEMPERATURE (Dukung format 't' milik Developer 2&3 dan 'temps' format usang)
+            let temps = data.t ?? data.temps;
+            if (temps) {
+                document.getElementById('t-ecu').innerText = (temps.c ?? temps.ctrl ?? 0) + "°C";
+                document.getElementById('t-motor').innerText = (temps.m ?? temps.motor ?? 0) + "°C";
+                document.getElementById('t-batt').innerText = (temps.b ?? temps.batt ?? 0) + "°C";
             }
 
-            /* ----- MEMBACA DATA KEYLESS ----- */
+            // PEMBACAAN FITUR OPSIONAL KEYLESS & SET (Khusus Developer 1)
             if (data.keyless) {
                 let klCb = document.getElementById('keylessEn');
-                if (klCb && klCb.checked !== (data.keyless.en === 1)) {
-                    klCb.checked = (data.keyless.en === 1);
-                }
+                if (klCb && klCb.checked !== (data.keyless.en === 1)) klCb.checked = (data.keyless.en === 1);
 
                 let klRssi = document.getElementById('keylessRssiInput');
-                if (klRssi && document.activeElement !== klRssi && data.keyless.rssiTh !== undefined) {
-                    klRssi.value = data.keyless.rssiTh;
-                }
+                if (klRssi && document.activeElement !== klRssi && data.keyless.rssiTh !== undefined) klRssi.value = data.keyless.rssiTh;
 
-                let t1 = document.getElementById('tag1-mac');
-                let b1 = document.getElementById('tag1-btn');
-                if (data.keyless.t1 !== undefined) {
-                    let isRegistered1 = (data.keyless.t1 && data.keyless.t1.toString().length > 5);
-                    if (t1) t1.innerText = isRegistered1 ? sanitizeHTML(data.keyless.t1) : "Belum Terdaftar";
-                    if (b1) b1.style.display = isRegistered1 ? "inline-block" : "none";
-                }
+                ['t1', 't2'].forEach((k, idx) => {
+                    let isReg = (data.keyless[k] && data.keyless[k].toString().length > 5);
+                    let text = document.getElementById(`tag${idx+1}-mac`);
+                    let btn = document.getElementById(`tag${idx+1}-btn`);
+                    if(text) text.innerText = isReg ? sanitizeHTML(data.keyless[k]) : "Belum Terdaftar";
+                    if(btn) btn.style.display = isReg ? "inline-block" : "none";
+                });
 
-                let t2 = document.getElementById('tag2-mac');
-                let b2 = document.getElementById('tag2-btn');
-                if (data.keyless.t2 !== undefined) {
-                    let isRegistered2 = (data.keyless.t2 && data.keyless.t2.toString().length > 5);
-                    if (t2) t2.innerText = isRegistered2 ? sanitizeHTML(data.keyless.t2) : "Belum Terdaftar";
-                    if (b2) b2.style.display = isRegistered2 ? "inline-block" : "none";
-                }
-
-                let relayIndicator = document.getElementById('relay-indicator'); // Teks di Tab Settings
-                let headerRelay = document.getElementById('header-relay-indicator'); // Kontainer Indikator Atas
-                let hrUnlocked = document.getElementById('hr-unlocked'); // Header Gembok Terbuka
-                let hrLocked = document.getElementById('hr-locked'); // Header Gembok Terkunci
-
-                // Hanya munculkan Gembok Header JIKA fitur Keyless diaktifkan (en = 1)
                 if (data.keyless.en !== undefined) {
-                    if (headerRelay) {
-                        headerRelay.style.display = (data.keyless.en === 1) ? 'flex' : 'none';
-                    }
+                    let hr = document.getElementById('header-relay-indicator');
+                    if (hr) hr.style.display = (data.keyless.en === 1) ? 'flex' : 'none';
                 }
 
                 if (data.keyless.relay !== undefined) {
+                    let ind = document.getElementById('relay-indicator'), hrUn = document.getElementById('hr-unlocked'), hrLo = document.getElementById('hr-locked');
                     if (data.keyless.relay === 1) {
-                        // KONDISI TERBUKA (UNLOCK)
-                        if (relayIndicator) {
-                            relayIndicator.innerText = "TERBUKA (UNLOCK)";
-                            relayIndicator.style.color = "var(--green)";
-                        }
-                        if (hrUnlocked && hrLocked) {
-                            hrUnlocked.style.display = "flex";
-                            hrLocked.style.display = "none";
-                        }
+                        if(ind) { ind.innerText = "TERBUKA (UNLOCK)"; ind.style.color = "var(--green)"; }
+                        if(hrUn && hrLo) { hrUn.style.display = "flex"; hrLo.style.display = "none"; }
                     } else {
-                        // KONDISI TERKUNCI (LOCK)
-                        if (relayIndicator) {
-                            relayIndicator.innerText = "TERKUNCI (LOCK)";
-                            relayIndicator.style.color = "var(--accent-red)";
-                        }
-                        if (hrUnlocked && hrLocked) {
-                            hrUnlocked.style.display = "none";
-                            hrLocked.style.display = "flex";
-                        }
+                        if(ind) { ind.innerText = "TERKUNCI (LOCK)"; ind.style.color = "var(--accent-red)"; }
+                        if(hrUn && hrLo) { hrUn.style.display = "none"; hrLo.style.display = "flex"; }
                     }
                 }
             }
 
-            /* ----- MEMBACA DATA SETTINGS STANDAR ----- */
             if (data.set) {
-                let popCb = document.getElementById('modePopupEn');
-                let slpCb = document.getElementById('autoSleepEn');
-                let olECb = document.getElementById('oledAlarmEn');
-                let bzECb = document.getElementById('buzzAlarmEn');
-                
+                let popCb = document.getElementById('modePopupEn'), slpCb = document.getElementById('autoSleepEn');
+                let olECb = document.getElementById('oledAlarmEn'), bzECb = document.getElementById('buzzAlarmEn');
                 if (popCb && data.set.pop !== undefined && popCb.checked !== (data.set.pop === 1)) popCb.checked = (data.set.pop === 1);
                 if (slpCb && data.set.slp !== undefined && slpCb.checked !== (data.set.slp === 1)) slpCb.checked = (data.set.slp === 1);
                 if (olECb && data.set.olE !== undefined && olECb.checked !== (data.set.olE === 1)) olECb.checked = (data.set.olE === 1);
                 if (bzECb && data.set.bzE !== undefined && bzECb.checked !== (data.set.bzE === 1)) bzECb.checked = (data.set.bzE === 1);
 
-                let olLInp = document.getElementById('oledAlarmLimit');
-                if (olLInp && document.activeElement !== olLInp && data.set.olL !== undefined) {
-                    olLInp.value = data.set.olL;
-                }
-                let bzLInp = document.getElementById('buzzAlarmLimit');
-                if (bzLInp && document.activeElement !== bzLInp && data.set.bzL !== undefined) {
-                    bzLInp.value = data.set.bzL;
-                }
+                let olLInp = document.getElementById('oledAlarmLimit'), bzLInp = document.getElementById('buzzAlarmLimit');
+                if (olLInp && document.activeElement !== olLInp && data.set.olL !== undefined) olLInp.value = data.set.olL;
+                if (bzLInp && document.activeElement !== bzLInp && data.set.bzL !== undefined) bzLInp.value = data.set.bzL;
             }
-            
-            if(data.cal !== undefined) {
-                document.getElementById('calib-status').innerText = data.cal.toFixed(3) + "x";
-            }
+            if(data.cal !== undefined) document.getElementById('calib-status').innerText = data.cal.toFixed(3) + "x";
 
-            // TAB BATTERY - BMS data processing
-            let capRem = getBestValue(data, ['remainCap', 'remain_cap', 'remCap', 'cap_rem', 'capRem']);
-            let capFull = getBestValue(data, ['fullCap', 'full_cap', 'capFull', 'cap_full']);
-            let soh = getBestValue(data, ['soh', 'health']);
-            let cycles = getBestValue(data, ['cycles', 'cycle']);
-            let delta = getBestValue(data, ['cellDelta', 'delta', 'celldiff']);
-            let cells = searchJSON(data, 'cells');
+            // TAB BATTERY (Terintegrasi ke semua jenis form BMS)
+            let capRem = data.h?.rc ?? getBestValue(data, ['remainCap', 'remain_cap', 'remCap']);
+            let capFull = data.h?.fc ?? getBestValue(data, ['fullCap', 'full_cap', 'capFull']);
+            let soh = data.h?.soh ?? getBestValue(data, ['soh', 'health']);
+            let cycles = data.h?.cyc ?? getBestValue(data, ['cycles', 'cycle']);
+            let delta = data.cd ?? data.cvs?.delta ?? getBestValue(data, ['cellDelta', 'celldiff']);
+            let cells = data.cells;
 
-            // Auto-sync battery capacity from fullCap
-            if (capFull !== undefined && capFull > 0) {
-                batteryCapacity = capFull;
-            }
+            if (capFull !== undefined && capFull > 0) batteryCapacity = capFull;
 
-            // Update SOC display
-            document.getElementById('soc-batt').innerText = soc + "%";
+            document.getElementById('soc-batt').innerText = Math.round(soc) + "%";
             let socBatBar = document.getElementById('soc-bar');
             if(socBatBar) socBatBar.style.setProperty('--power-pct', soc + "%");
             
@@ -1443,7 +1260,6 @@
             document.getElementById('a-val').innerText = Math.abs(rawAmps).toFixed(1) + "A";
             document.getElementById('power-val').innerText = powerStr;
 
-            // BMS detailed data
             if (capRem !== undefined) document.getElementById('cap-rem').innerText = capRem.toFixed(1) + " Ah";
             if (capFull !== undefined) document.getElementById('cap-full').innerText = capFull.toFixed(1) + " Ah";
             if (soh !== undefined) document.getElementById('soh-val').innerText = Math.round(soh) + "%";
@@ -1453,64 +1269,60 @@
                 document.getElementById('delta-val').innerText = displayDelta.toFixed(3) + "V";
             }
             
-            // Cell voltages
             if (cells && Array.isArray(cells)) {
                 const cellContainer = document.getElementById('cell-grid');
                 if(cellContainer.children.length !== cells.length) {
                     cellContainer.innerHTML = ''; 
                     cells.forEach((volt, index) => {
-                        let div = document.createElement('div');
-                        div.className = 'cell-box';
-                        div.innerHTML = `
-                            <div class="cell-header">
-                                <span class="cell-label">C${index + 1}</span>
-                                <span class="cell-val" id="cell-v-${index}">0.000V</span>
-                            </div>
-                            <div class="cell-bar-bg"><div class="cell-bar-fill" id="cell-bar-${index}"></div></div>
-                        `;
-                        cellContainer.appendChild(div);
+                        cellContainer.innerHTML += `<div class="cell-box"><div class="cell-header"><span class="cell-label">C${index + 1}</span><span class="cell-val" id="cell-v-${index}">0.000V</span></div><div class="cell-bar-bg"><div class="cell-bar-fill" id="cell-bar-${index}"></div></div></div>`;
                     });
                 }
                 cells.forEach((volt, index) => {
-                    let vEl = document.getElementById(`cell-v-${index}`);
-                    let bEl = document.getElementById(`cell-bar-${index}`);
+                    let vEl = document.getElementById(`cell-v-${index}`), bEl = document.getElementById(`cell-bar-${index}`);
                     if (vEl && bEl) {
                         let displayVolt = Number(volt) > 100 ? Number(volt) / 1000 : Number(volt);
                         vEl.innerText = displayVolt.toFixed(3) + "V";
                         let pct = ((displayVolt - 2.8) / (4.25 - 2.8)) * 100;
-                        if(pct < 0) pct = 0; if(pct > 100) pct = 100;
-                        bEl.style.width = pct + "%";
+                        bEl.style.width = Math.min(Math.max(pct, 0), 100) + "%";
                     }
                 });
             }
 
-            // Charging Status with improved ETA calculation
+            // MENDUKUNG 3 JENIS STATUS CHARGER (Dev 1, 2, dan 3)
             const chgStatus = document.getElementById('charge-status');
             const chgEta = document.getElementById('charge-eta');
-            if (data.charger && data.charger.on === 1) {
-                chgStatus.innerText = data.charger.ori === 1 ? "ORI CHARGER" : "FAST CHARGER";
+            
+            let isCharging = false;
+            let isOri = false;
+            let chgAmps = 0;
+
+            if (data.chr) {
+                if (data.chr.on === 1) {
+                    isCharging = true; isOri = (data.chr.ori === 1);
+                } else if (modeRaw === "CHARGING" || data.chr.a > 0.5) {
+                    isCharging = true;
+                }
+                chgAmps = data.chr.a ?? 0;
+            } else if (modeRaw === "CHARGING") {
+                isCharging = true;
+            }
+
+            if (isCharging) {
+                chgStatus.innerText = isOri ? "ORI CHARGER" : "FAST CHARGER";
                 chgStatus.style.color = "var(--cyan)";
-                let chgAmps = data.charger.a || 0;
+                if (chgAmps <= 0 && rawAmps < 0) chgAmps = Math.abs(rawAmps); 
                 
-                // New ETA calculation using fullCap and remainCap
                 if (capFull !== undefined && capRem !== undefined && chgAmps > 0) {
-                    let ahRemaining = capFull - capRem; // Actual Ah needed to full
-                    let hoursRemaining = ahRemaining / chgAmps;
+                    let hoursRemaining = (capFull - capRem) / chgAmps;
                     if (hoursRemaining > 0 && hoursRemaining < 100) {
                         let h = Math.floor(hoursRemaining), m = Math.floor((hoursRemaining - h) * 60);
                         chgEta.innerText = `${h}h ${m}m`; chgEta.style.color = "var(--green)";
-                    } else {
-                        chgEta.innerText = "FULL"; chgEta.style.color = "var(--green)";
-                    }
+                    } else { chgEta.innerText = "FULL"; chgEta.style.color = "var(--green)"; }
                 } else if (soc < 100 && chgAmps > 0) {
-                    // Fallback to SOC-based calculation if cap data not available
-                    let ahRemaining = ((100 - soc) / 100) * batteryCapacity;
-                    let hoursRemaining = ahRemaining / chgAmps;
+                    let hoursRemaining = (((100 - soc) / 100) * batteryCapacity) / chgAmps;
                     let h = Math.floor(hoursRemaining), m = Math.floor((hoursRemaining - h) * 60);
                     chgEta.innerText = `${h}h ${m}m`; chgEta.style.color = "var(--orange)";
-                } else {
-                    chgEta.innerText = "FULL"; chgEta.style.color = "var(--green)";
-                }
+                } else { chgEta.innerText = "FULL"; chgEta.style.color = "var(--green)"; }
             } else {
                 chgStatus.innerText = "NOT CHARGING"; chgStatus.style.color = "var(--text-dim)";
                 chgEta.innerText = "--h --m"; chgEta.style.color = "var(--text-dim)";
@@ -1521,20 +1333,14 @@
 
         function updateCharts(speed, current) {
             if (!speedChart || !currentChart) return;
-            speedChart.data.datasets[0].data.shift(); 
-            speedChart.data.datasets[0].data.push(speed); 
-            speedChart.update();
-            currentChart.data.datasets[0].data.shift(); 
-            currentChart.data.datasets[0].data.push(current); 
-            currentChart.update();
+            speedChart.data.datasets[0].data.shift(); speedChart.data.datasets[0].data.push(speed); speedChart.update();
+            currentChart.data.datasets[0].data.shift(); currentChart.data.datasets[0].data.push(current); currentChart.update();
         }
         
         function logSystem(text) {
             const logBox = document.getElementById('system-log-box');
             if (!logBox) return;
-            const time = new Date().toLocaleTimeString('id-ID');
-            const safeText = sanitizeHTML(text);
-            const logLine = document.createTextNode(`\n[${time}] ${safeText}`);
+            const logLine = document.createTextNode(`\n[${new Date().toLocaleTimeString('id-ID')}] ${sanitizeHTML(text)}`);
             logBox.appendChild(logLine);
             while (logBox.childNodes.length > 50) logBox.removeChild(logBox.firstChild);
             if (document.getElementById('logs').classList.contains('active')) logBox.scrollTop = logBox.scrollHeight;
@@ -1545,17 +1351,17 @@
             let now = Date.now();
             if (now - lastCanLogTime < 1000) return;
             lastCanLogTime = now;
-            
             const logBox = document.getElementById('can-log-box');
             if (!logBox) return;
-            const time = new Date().toLocaleTimeString('id-ID');
-            const safeText = sanitizeHTML(text);
-            const logLine = document.createTextNode(`\n[${time}] ${safeText}`);
+            const logLine = document.createTextNode(`\n[${new Date().toLocaleTimeString('id-ID')}] ${sanitizeHTML(text)}`);
             logBox.appendChild(logLine);
             while (logBox.childNodes.length > 20) logBox.removeChild(logBox.firstChild);
             if (document.getElementById('logs').classList.contains('active')) logBox.scrollTop = logBox.scrollHeight;
         }
 
+        // ==========================================
+        //  PENGAYAAN PARSER HANDLER (Mencegah Crash)
+        // ==========================================
         function handleNotifications(event) {
             let value = new TextDecoder().decode(event.target.value); 
             rxBuffer += value;
@@ -1567,7 +1373,15 @@
                     line = line.trim();
                     if (line !== "") { 
                         logCanData("RAW: " + line);
-                        try { let data = JSON.parse(line); updateDashboard(data); } 
+                        try { 
+                            let data = JSON.parse(line); 
+                            
+                            // FILTER KHUSUS: Abaikan payload setup atau status dari modul Keyless Dev 1 
+                            // (Mencegah parse error)
+                            if (data.scan_status || data.disc) continue; 
+                            
+                            updateDashboard(data); 
+                        } 
                         catch (e) { logSystem("[ERROR PARSE JSON] " + e.message); }
                     } 
                 }
@@ -1577,35 +1391,21 @@
         function toggleMapMode() {
             const grid = document.getElementById('range-trip-grid');
             const btn = document.getElementById('mapModeToggleBtn');
-            
-            // Toggle class CSS
             grid.classList.toggle('map-mode-active');
-            
-            // Ubah teks dan warna tombol sesuai status
             if (grid.classList.contains('map-mode-active')) {
                 btn.innerHTML = '<i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> NORMALIZE';
-                btn.style.color = 'var(--cyan)';
-                btn.style.borderColor = 'var(--cyan)';
+                btn.style.color = 'var(--cyan)'; btn.style.borderColor = 'var(--cyan)';
             } else {
                 btn.innerHTML = '<i data-lucide="minimize-2" style="width: 12px; height: 12px;"></i> MAPS PIP';
-                btn.style.color = 'var(--text-dim)';
-                btn.style.borderColor = 'var(--border-col)';
+                btn.style.color = 'var(--text-dim)'; btn.style.borderColor = 'var(--border-col)';
             }
-            
-            // Render ulang ikon Lucide yang baru disuntikkan
             lucide.createIcons();
         } 
 
-        function toggleNav() {
-            document.getElementById('bottomNav').classList.toggle('show');
-        }
-
-        // Tutup navigasi secara otomatis jika pengguna mengetuk area di luar navigasi
+        function toggleNav() { document.getElementById('bottomNav').classList.toggle('show'); }
         document.addEventListener('click', function(event) {
             const nav = document.getElementById('bottomNav');
-            if (nav && nav.classList.contains('show') && !nav.contains(event.target)) {
-                nav.classList.remove('show');
-            }
+            if (nav && nav.classList.contains('show') && !nav.contains(event.target)) nav.classList.remove('show');
         });
     </script>
 </body>
