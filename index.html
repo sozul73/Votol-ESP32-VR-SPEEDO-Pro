@@ -279,23 +279,39 @@
             font-size: 15px !important;
         }
 
-        /* --- AUTO-HIDE BOTTOM NAV --- */
+        /* --- TAP-TO-OPEN BOTTOM NAV --- */
         .bottom-nav { 
             position: fixed; bottom: 0; width: 100%; background: var(--nav-bg); backdrop-filter: blur(10px); 
             display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border-col); 
-            z-index: 100; transform: translateY(calc(100% - 15px)); opacity: 0.4;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+            z-index: 100; transform: translateY(100%); /* Disembunyikan total ke bawah layar */
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .bottom-nav::before {
-            content: ''; position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
-            width: 40px; height: 4px; background: var(--text-dim); border-radius: 2px;
+        
+        /* Kelas untuk memunculkan navigasi via JavaScript */
+        .bottom-nav.show {
+            transform: translateY(0); 
         }
-        .bottom-nav::after { content: ''; position: absolute; top: -30px; left: 0; width: 100%; height: 30px; background: transparent; }
-        .bottom-nav:hover, .bottom-nav:active, .bottom-nav:focus-within { transform: translateY(0); opacity: 1; }
+
+        /* Desain "pegangan" / handle tab yang mengintip di bawah layar */
+        .nav-handle {
+            position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+            width: 80px; height: 28px; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            background: var(--nav-bg);
+            border-radius: 12px 12px 0 0;
+            border: 1px solid var(--border-col);
+            border-bottom: none;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Garis pil di dalam handle */
+        .nav-handle::after {
+            content: ''; width: 35px; height: 4px; background: var(--text-dim); border-radius: 2px;
+        }
         
         .nav-item { color: var(--text-dim); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: bold; flex: 1;}
         .nav-item.active { color: var(--cyan); transform: translateY(-3px); }
-        
+
         input, select { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-col); padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; font-size: 14px;}
         .btn-full { width: 100%; margin-top: 10px; }
         .cell-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 15px; }
@@ -322,7 +338,7 @@
             </div>
             
             <!-- Group Header Relay Indicator -->
-            <div id="header-relay-indicator">
+            <div id="header-relay-indicator" style="display: none;">
                 <!-- UNLOCKED STATE (Tergembok Buka - Hijau) -->
                 <div id="hr-unlocked" style="display: none; align-items: center; gap: 5px; color: var(--green);">
                     <i data-lucide="unlock" style="width: 18px; height: 18px;"></i>
@@ -736,7 +752,9 @@
         </section>
     </main>
 
-    <nav class="bottom-nav">
+    <nav class="bottom-nav" id="bottomNav">
+        <div class="nav-handle" onclick="toggleNav()"></div>
+        
         <div class="nav-item active" onclick="loadPage('dash', this)"><i data-lucide="gauge"></i> Dash</div>
         <div class="nav-item" onclick="loadPage('battery', this)"><i data-lucide="battery-charging"></i> Battery</div>
         <div class="nav-item" onclick="loadPage('trip', this)"><i data-lucide="route"></i> Trip</div>
@@ -820,6 +838,8 @@
             document.getElementById(pageId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
+
+            document.getElementById('bottomNav').classList.remove('show');
             
             // Proper chart lifecycle management
             if (pageId !== 'trip') {
@@ -1262,13 +1282,25 @@
                 const allModes = ['P', 'L', 'M', 'H', 'R', 'STAND', 'S'];
                 allModes.forEach(m => {
                     let el = document.getElementById('mode-' + m);
-                    if(el) {
-                        el.classList.remove('active-blue', 'active-green', 'active-red');
-                    }
+                    if(el) { el.classList.remove('active-blue', 'active-green', 'active-red'); }
                 });
 
-                // 2. Berikan highlight ke mode yang sedang aktif
-                if (modeStr === "PARK" || modeStr === "P") {
+                // 2. Kembalikan teks dan visibilitas grid L-M-H ke bentuk standar
+                let modeL = document.getElementById('mode-L');
+                let modeM = document.getElementById('mode-M');
+                let modeH = document.getElementById('mode-H');
+                
+                if(modeL) { modeL.style.opacity = '1'; modeL.innerText = 'L'; }
+                if(modeM) { modeM.innerText = 'M'; }
+                if(modeH) { modeH.style.opacity = '1'; modeH.innerText = 'H'; }
+
+                // 3. Berikan highlight atau modifikasi grid sesuai mode aktif
+                if (modeStr === "DRIVE" || modeStr === "D") {
+                    // Sembunyikan L & H, ubah tulisan M menjadi D
+                    if(modeL) modeL.style.opacity = '0';
+                    if(modeM) { modeM.innerText = 'D'; modeM.classList.add('active-blue'); }
+                    if(modeH) modeH.style.opacity = '0';
+                } else if (modeStr === "PARK" || modeStr === "P") {
                     document.getElementById('mode-P')?.classList.add('active-green'); 
                 } else if (modeStr === "LOW" || modeStr === "1" || modeStr === "L") {
                     document.getElementById('mode-L')?.classList.add('active-blue');
@@ -1327,8 +1359,16 @@
                 }
 
                 let relayIndicator = document.getElementById('relay-indicator'); // Teks di Tab Settings
+                let headerRelay = document.getElementById('header-relay-indicator'); // Kontainer Indikator Atas
                 let hrUnlocked = document.getElementById('hr-unlocked'); // Header Gembok Terbuka
                 let hrLocked = document.getElementById('hr-locked'); // Header Gembok Terkunci
+
+                // Hanya munculkan Gembok Header JIKA fitur Keyless diaktifkan (en = 1)
+                if (data.keyless.en !== undefined) {
+                    if (headerRelay) {
+                        headerRelay.style.display = (data.keyless.en === 1) ? 'flex' : 'none';
+                    }
+                }
 
                 if (data.keyless.relay !== undefined) {
                     if (data.keyless.relay === 1) {
@@ -1555,6 +1595,18 @@
             // Render ulang ikon Lucide yang baru disuntikkan
             lucide.createIcons();
         } 
+
+        function toggleNav() {
+            document.getElementById('bottomNav').classList.toggle('show');
+        }
+
+        // Tutup navigasi secara otomatis jika pengguna mengetuk area di luar navigasi
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('bottomNav');
+            if (nav && nav.classList.contains('show') && !nav.contains(event.target)) {
+                nav.classList.remove('show');
+            }
+        });
     </script>
 </body>
 </html>
