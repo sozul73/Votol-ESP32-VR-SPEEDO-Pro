@@ -569,7 +569,7 @@
 
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#0d1117; padding:12px; border-radius:8px; border:1px solid #30363d;">
                         <span style="font-size:14px; font-weight:bold; color:white;">Sensitivitas Jarak (RSSI)</span>
-                        <select id="keylessRssiInput" onchange="sendKeylessRssi()" style="padding:8px; background:#161b22; color:white; border:1px solid #30363d; border-radius:6px; font-size:12px; cursor:pointer; width: auto;">
+                        <select id="keylessRssiInput" onchange="sendKeylessRssi()" onfocus="window.blockRssiUpdate = true" onclick="window.blockRssiUpdate = true" onblur="setTimeout(() => window.blockRssiUpdate = false, 1500)" style="padding:8px; background:#161b22; color:white; border:1px solid #30363d; border-radius:6px; font-size:12px; cursor:pointer; width: auto;">
                             <option value="-65">Sangat Dekat (~1m)</option>
                             <option value="-75">Dekat (~2m)</option>
                             <option value="-80" selected>Sedang (~3m)</option>
@@ -976,9 +976,19 @@
         }
 
         async function sendKeylessRssi() {
+            // 1. Kunci antarmuka agar tidak ditimpa oleh data JSON masuk yang masih delay
+            window.blockRssiUpdate = true; 
+            
             let val = document.getElementById('keylessRssiInput').value;
-            let command = `SET,RSSI,${val}`;
+            
+            // 2. PERBAIKAN BUG: Ubah format command menjadi KEYRSSI sesuai modul ESP32
+            let command = `KEYRSSI,${val}`; 
+            
             await safeBleWrite(command, "Keyless RSSI berhasil diupdate!", "Gagal menyimpan sensitivitas jarak");
+            
+            // 3. Buka kunci setelah 2.5 detik (memberi waktu agar ESP32 sempat mengubah data JSON)
+            clearTimeout(window.rssiTimeout);
+            window.rssiTimeout = setTimeout(() => { window.blockRssiUpdate = false; }, 2500);
         }
 
         async function registerManualTag(id) {
@@ -1201,8 +1211,14 @@
                 if (klCb && klCb.checked !== (data.keyless.en === 1)) klCb.checked = (data.keyless.en === 1);
 
                 let klRssi = document.getElementById('keylessRssiInput');
-                if (klRssi && document.activeElement !== klRssi && data.keyless.rssiTh !== undefined) klRssi.value = data.keyless.rssiTh;
-
+                
+                // Mendukung pembacaan json key "rssiTh" atau "rssi" 
+                let rssiVal = data.keyless.rssiTh ?? data.keyless.rssi;
+                
+                // Perbarui nilai hanya jika UI tidak sedang dikunci (blockRssiUpdate = false)
+                if (klRssi && !window.blockRssiUpdate && document.activeElement !== klRssi && rssiVal !== undefined) {
+                    klRssi.value = rssiVal;
+                }
                 ['t1', 't2'].forEach((k, idx) => {
                     let isReg = (data.keyless[k] && data.keyless[k].toString().length > 5);
                     let text = document.getElementById(`tag${idx+1}-mac`);
