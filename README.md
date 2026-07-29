@@ -50,15 +50,6 @@ Chart.js (Untuk rendering grafik secara real-time)
 
 Lucide Icons (Untuk sistem ikon yang tajam dan ringan)
 
-📸 Screenshots
-(Silakan tambahkan gambar screenshot layar dashboard Anda di sini. Cara menambahkannya: ![Deskripsi Gambar](link-gambar.png))
-
-Tampilan Portrait (HP): [Masukkan Screenshot Portrait]
-
-Tampilan Landscape (Dashboard Display): [Masukkan Screenshot Landscape]
-
-Tampilan Tab BMS & Log: [Masukkan Screenshot Lainnya]
-
 📝 Konfigurasi ESP32 (Opsional)
 Untuk menghubungkan web ini, ESP32 Anda harus disetel sebagai GATT Server dengan parameter berikut:
 
