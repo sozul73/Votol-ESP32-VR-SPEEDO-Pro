@@ -992,23 +992,41 @@
         }
 
         async function registerManualTag(id) {
-            let mac = document.getElementById(`manual-mac-input-${id}`).value.trim().toUpperCase();
-            if(mac === "") { alert("MAC tidak boleh kosong!"); return; }
+            const macInput = document.getElementById(`manual-mac-input-${id}`);
+            if (!macInput) return;
             
-            let macRegex = /^([0-9A-F]{2}:){5}[0-9A-F]{2}$|^([0-9A-F]{12})$/;
-            if(!macRegex.test(mac.replace(/:/g, ''))) { 
-                alert("Format MAC tidak valid! Gunakan format XX:XX:XX:XX:XX:XX atau XXXXXXXXXXXX");
-                return; 
+            let mac = macInput.value.trim().toUpperCase();
+            
+            // Validasi format jumlah karakter (harus 12 karakter hex)
+            if (mac.replace(/:/g, '').length !== 12) {
+                alert("Format MAC Address tidak valid! Harus berupa 12 karakter hexadesimal.");
+                return;
             }
             
-            let command = `SET,TAG,${id},${mac}`;
-            let success = await safeBleWrite(command, `Smart Tag #${id} berhasil disimpan: ${mac}`, `Gagal menyimpan Smart Tag #${id}`);
+            // Memaksa format XX:XX:XX:XX:XX:XX secara otomatis
+            let cleanMac = mac.replace(/:/g, '');
+            let formattedMac = "";
+            for (let i = 0; i < cleanMac.length; i += 2) {
+                formattedMac += cleanMac.substring(i, i + 2);
+                if (i < 10) formattedMac += ":";
+            }
+            
+            // PERBAIKAN COMMAND: Menggunakan ADDTAG sesuai standar app.js
+            let command = `ADDTAG,${id},${formattedMac}`;
+            
+            let success = await safeBleWrite(command, `Smart Tag #${id} berhasil disimpan: ${formattedMac}`, `Gagal menyimpan Smart Tag #${id}`);
+            
+            // Kosongkan kolom input jika berhasil
+            if (success) macInput.value = "";
         }
 
         async function deleteTag(id) {
             if(!confirm(`Yakin ingin menghapus Smart Tag #${id}?`)) return;
-            let command = `DEL,TAG,${id}`;
-            let success = await safeBleWrite(command, `Smart Tag #${id} berhasil dihapus!`, "Gagal menghapus Tag");
+            
+            // PERBAIKAN COMMAND: Menggunakan DELTAG sesuai standar app.js
+            let command = `DELTAG,${id}`;
+            
+            await safeBleWrite(command, `Smart Tag #${id} berhasil dihapus!`, "Gagal menghapus Tag");
         }
 
         async function scanForNearbyDevices() {
