@@ -230,8 +230,8 @@
             #dash-power-card .power-bar-container { width: 30px; max-width: 30px; height: 100%; min-height: 80px; margin: 0 auto; }
             #dash-power-val-landscape { font-size: 14px !important; margin-top: 5px; }
             
-            .power-bar-fill.discharge { left: 0; right: 0; width: 100% !important; bottom: 30%; top: auto; height: var(--power-size, 0%); }
-            .power-bar-fill.regen { left: 0; right: 0; width: 100% !important; top: 70%; bottom: auto; height: var(--power-size, 0%); }
+            #dash-power-card .power-bar-fill.discharge { left: 0; right: 0; width: 100% !important; bottom: 30%; top: auto; height: var(--power-size, 0%); }
+            #dash-power-card .power-bar-fill.regen { left: 0; right: 0; width: 100% !important; top: 70%; bottom: auto; height: var(--power-size, 0%); }
             
             .stats-group { display: flex; flex-direction: column; gap: 8px; justify-content: center; height: 100%;}
             .info-grid-2 { grid-template-columns: 1fr; margin-bottom: 0; gap: 8px;}
@@ -1318,8 +1318,6 @@
                 let modeStr = sanitizeHTML(modeRaw.toString().toUpperCase());
                 
                 // --- PERBAIKAN BUG BRAKE FLICKER ---
-                // Abaikan pembaruan grid jika mode yang masuk adalah tuas rem (BRAKE).
-                // Ini akan mempertahankan status gigi terakhir di layar.
                 if (modeStr !== "BRAKE" && modeStr !== "B") {
                     
                     // 1. Bersihkan semua highlight terlebih dahulu
@@ -1329,22 +1327,41 @@
                         if(el) el.classList.remove('active-blue', 'active-green', 'active-red');
                     });
 
-                    // 2. Kembalikan teks dan visibilitas grid L-M-H ke bentuk standar
+                    // 2. Kembalikan teks dan visibilitas grid ke bentuk standar
+                    let modeP = document.getElementById('mode-P');
                     let modeL = document.getElementById('mode-L');
                     let modeM = document.getElementById('mode-M');
                     let modeH = document.getElementById('mode-H');
                     
+                    if(modeP) { modeP.innerText = 'P'; } // Selalu reset kembali ke P
                     if(modeL) { modeL.style.opacity = '1'; modeL.innerText = 'L'; }
                     if(modeM) { modeM.innerText = 'M'; }
                     if(modeH) { modeH.style.opacity = '1'; modeH.innerText = 'H'; }
 
+                    // --- DETEKSI MODE CHARGING UNTUK INDIKATOR C ---
+                    // Simpan status charging di memory (window) agar tidak di-reset secara paksa oleh paket Fast JSON
+                    if (typeof window.isChargingGlobal === 'undefined') window.isChargingGlobal = false;
+
+                    // Perbarui status charging yang sebenarnya HANYA saat paket Full JSON masuk
+                    if (data.type === "full" || data.type === undefined) {
+                        window.isChargingGlobal = false;
+                        if (data.chr && (data.chr.on === 1 || data.chr.a > 0.5)) window.isChargingGlobal = true;
+                    }
+                    
+                    // Fallback manual jika firmware mengirim string CHARGING
+                    if (modeStr === "CHARGING" || modeStr === "C") window.isChargingGlobal = true;
+
                     // 3. Berikan highlight atau modifikasi grid sesuai mode aktif
-                    if (modeStr === "DRIVE" || modeStr === "D") {
+                    // Prioritas 1: Jika Charging aktif, paksa grid atas menjadi C dan abaikan status LOCKED/PARK
+                    if (window.isChargingGlobal) {
+                        if(modeP) { modeP.innerText = 'C'; modeP.classList.add('active-green'); }
+                    } else if (modeStr === "DRIVE" || modeStr === "D") {
                         if(modeL) modeL.style.opacity = '0';
                         if(modeM) { modeM.innerText = 'D'; modeM.classList.add('active-blue'); }
                         if(modeH) modeH.style.opacity = '0';
-                    } else if (modeStr === "PARK" || modeStr === "P") { 
-                        document.getElementById('mode-P')?.classList.add('active-green'); 
+                    } else if (modeStr === "PARK" || modeStr === "P" || modeStr === "LOCKED") { 
+                        // Menggabungkan pembacaan LOCKED agar bereaksi persis seperti PARK (hijau)
+                        if(modeP) { modeP.classList.add('active-green'); }
                     } else if (modeStr === "LOW" || modeStr === "1" || modeStr === "L") { 
                         document.getElementById('mode-L')?.classList.add('active-blue'); 
                     } else if (modeStr === "MID" || modeStr === "2" || modeStr === "M") { 
