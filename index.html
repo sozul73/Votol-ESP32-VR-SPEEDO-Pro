@@ -451,8 +451,8 @@
                     <span class="label" style="margin:0;">BMS MONITORING</span>
                     <b id="power-val" style="color: var(--cyan); font-size: 18px;">0 W</b>
                 </div>
-                <div class="power-bar-container" style="display: block; position: relative;">
-                    <div id="soc-bar" class="power-bar-fill" style="background: var(--green); top: 0; bottom: 0; left: 0; right: auto; width: 0%;"></div>
+                <div class="power-bar-container">
+                    <div id="bms-power-bar" class="power-bar-fill discharge"></div>
                 </div>
                 <div class="stats-row">
                     <div class="stat-box"><small class="label">SOC</small><b id="soc-batt">0%</b></div>
@@ -547,6 +547,23 @@
                         <div style="display:flex; gap:5px;">
                             <input type="number" id="buzzAlarmLimit" value="80" min="0" max="200" style="width:70px; text-align:center; background:#161b22; color:white; border:1px solid #30363d; border-radius:6px;">
                             <button onclick="sendAlarmBuzzer()" style="background:var(--orange); border:none; padding:8px 12px; border-radius:6px; color:white; font-weight:bold; cursor:pointer;">SET</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXTERNAL BATTERY CALIBRATION -->
+            <div class="card">
+                <span class="label">EXTERNAL BATTERY CALIBRATION</span>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:15px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#0d1117; padding:12px; border-radius:8px; border:1px solid #30363d;">
+                        <label style="display:flex; align-items:center; justify-content:space-between; font-size:14px; font-weight:bold; color:white; cursor:pointer; flex:1; margin-right:15px;">
+                            <span>Extra Battery Capacity (Ah)</span>
+                            <input type="checkbox" id="extBattEn" onchange="sendExtBattToggle()">
+                        </label>
+                        <div style="display:flex; gap:5px;">
+                            <input type="number" id="extBattAh" value="15" min="1" max="200" step="0.5" style="width:70px; text-align:center; background:#161b22; color:white; border:1px solid #30363d; border-radius:6px;">
+                            <button onclick="sendExtBattAh()" style="background:var(--green); border:none; padding:8px 12px; border-radius:6px; color:white; font-weight:bold; cursor:pointer;">SET</button>
                         </div>
                     </div>
                 </div>
@@ -1001,6 +1018,22 @@
             await safeBleWrite(command, "Keyless state berhasil diupdate!", "Gagal menyimpan pengaturan Keyless");
         }
 
+        async function sendExtBattToggle() {
+            let en = document.getElementById('extBattEn').checked ? 1 : 0;
+            let command = `SET,EXTBATT,${en}`;
+            await safeBleWrite(command, "Status Baterai Tambahan berhasil diupdate!", "Gagal menyimpan status baterai tambahan");
+        }
+
+        async function sendExtBattAh() {
+            let ah = parseFloat(document.getElementById('extBattAh').value);
+            if(isNaN(ah) || ah < 1 || ah > 200) { 
+                alert("Kapasitas baterai harus antara 1 - 200 Ah!"); 
+                return; 
+            }
+            let command = `EXTAH,${ah.toFixed(1)}`;
+            await safeBleWrite(command, `Kapasitas Baterai Tambahan berhasil diset ke ${ah} Ah!`, "Gagal menyimpan kapasitas baterai tambahan");
+        }
+
         async function sendKeylessRssi() {
             // 1. Kunci antarmuka agar tidak ditimpa oleh data JSON masuk yang masih delay
             window.blockRssiUpdate = true; 
@@ -1169,28 +1202,54 @@
             let dashPower = document.getElementById('dash-power-val');
             let dashPowerLand = document.getElementById('dash-power-val-landscape');
             let dashPowerBar = document.getElementById('dash-power-bar');
+            let bmsPowerBar = document.getElementById('bms-power-bar'); // Tarik elemen bar BMS
+            let bmsPowerText = document.getElementById('power-val'); // Tarik teks power di tab BMS
             
+            // Penentuan warna dinamis: Biru (Discharge), Hijau (Charge/Regen), Abu-abu (Idle)
+            let powerColor = rawPower < 0 ? "var(--cyan)" : (rawPower > 0 ? "var(--green)" : "var(--text-main)");
+
             if(dashPower) {
                 dashPower.innerText = powerStr;
-                dashPower.style.color = rawPower < 0 ? "var(--cyan)" : (rawPower > 0 ? "var(--green)" : "var(--text-main)");
+                dashPower.style.color = powerColor;
             }
             if(dashPowerLand) {
                 dashPowerLand.innerText = powerStr;
-                dashPowerLand.style.color = rawPower < 0 ? "var(--cyan)" : (rawPower > 0 ? "var(--green)" : "var(--text-main)");
+                dashPowerLand.style.color = powerColor;
+            }
+            // Terapkan warna dan angka dinamis ke tab Battery juga
+            if(bmsPowerText) {
+                bmsPowerText.innerText = powerStr;
+                bmsPowerText.style.color = powerColor;
             }
             
-            if(dashPowerBar) {
-                let maxDischarge = 6000; let maxRegen = 4000;     
+            if(dashPowerBar || bmsPowerBar) {
+                let maxDischarge = 6000; 
+                let maxRegen = 4000;     
+                let barClass = "power-bar-fill discharge";
+                let barSize = "0%";
+                let barColor = "var(--cyan)";
+                
                 if (rawPower <= -1) { 
-                    dashPowerBar.className = "power-bar-fill discharge";
-                    dashPowerBar.style.setProperty('--power-size', (Math.min((displayPower / maxDischarge) * 100, 100) * 0.7) + '%');
-                    dashPowerBar.style.setProperty('--bar-color', 'var(--cyan)');
+                    barClass = "power-bar-fill discharge";
+                    barSize = (Math.min((displayPower / maxDischarge) * 100, 100) * 0.7) + '%';
+                    barColor = 'var(--cyan)';
                 } else if (rawPower >= 1) {
-                    dashPowerBar.className = "power-bar-fill regen";
-                    dashPowerBar.style.setProperty('--power-size', (Math.min((displayPower / maxRegen) * 100, 100) * 0.3) + '%');
-                    dashPowerBar.style.setProperty('--bar-color', 'var(--green)');
-                } else {
-                    dashPowerBar.style.setProperty('--power-size', '0%');
+                    barClass = "power-bar-fill regen";
+                    barSize = (Math.min((displayPower / maxRegen) * 100, 100) * 0.3) + '%';
+                    barColor = 'var(--green)';
+                } 
+
+                // Terapkan ke Dashboard Power Bar
+                if (dashPowerBar) {
+                    dashPowerBar.className = barClass;
+                    dashPowerBar.style.setProperty('--power-size', barSize);
+                    dashPowerBar.style.setProperty('--bar-color', barColor);
+                }
+                // Terapkan ke Battery Tab Power Bar
+                if (bmsPowerBar) {
+                    bmsPowerBar.className = barClass;
+                    bmsPowerBar.style.setProperty('--power-size', barSize);
+                    bmsPowerBar.style.setProperty('--bar-color', barColor);
                 }
             }
 
@@ -1312,14 +1371,17 @@
             if (data.set) {
                 let popCb = document.getElementById('modePopupEn'), slpCb = document.getElementById('autoSleepEn');
                 let olECb = document.getElementById('oledAlarmEn'), bzECb = document.getElementById('buzzAlarmEn');
+                let extBattCb = document.getElementById('extBattEn');
                 if (popCb && data.set.pop !== undefined && popCb.checked !== (data.set.pop === 1)) popCb.checked = (data.set.pop === 1);
                 if (slpCb && data.set.slp !== undefined && slpCb.checked !== (data.set.slp === 1)) slpCb.checked = (data.set.slp === 1);
                 if (olECb && data.set.olE !== undefined && olECb.checked !== (data.set.olE === 1)) olECb.checked = (data.set.olE === 1);
                 if (bzECb && data.set.bzE !== undefined && bzECb.checked !== (data.set.bzE === 1)) bzECb.checked = (data.set.bzE === 1);
-
+                if (extBattCb && data.set.xbE !== undefined && extBattCb.checked !== (data.set.xbE === 1)) extBattCb.checked = (data.set.xbE === 1);
                 let olLInp = document.getElementById('oledAlarmLimit'), bzLInp = document.getElementById('buzzAlarmLimit');
+                let extAhInp = document.getElementById('extBattAh');
                 if (olLInp && document.activeElement !== olLInp && data.set.olL !== undefined) olLInp.value = data.set.olL;
                 if (bzLInp && document.activeElement !== bzLInp && data.set.bzL !== undefined) bzLInp.value = data.set.bzL;
+                if (extAhInp && document.activeElement !== extAhInp && data.set.xbA !== undefined) extAhInp.value = data.set.xbA;
             }
             if(data.cal !== undefined) document.getElementById('calib-status').innerText = data.cal.toFixed(3) + "x";
 
@@ -1334,12 +1396,9 @@
             if (capFull !== undefined && capFull > 0) batteryCapacity = capFull;
 
             document.getElementById('soc-batt').innerText = Math.round(soc) + "%";
-            let socBatBar = document.getElementById('soc-bar');
-            if(socBatBar) socBatBar.style.setProperty('--power-pct', soc + "%");
             
             document.getElementById('v-val').innerText = volts.toFixed(1) + "V";
             document.getElementById('a-val').innerText = Math.abs(rawAmps).toFixed(1) + "A";
-            document.getElementById('power-val').innerText = powerStr;
 
             if (capRem !== undefined) document.getElementById('cap-rem').innerText = capRem.toFixed(1) + " Ah";
             if (capFull !== undefined) document.getElementById('cap-full').innerText = capFull.toFixed(1) + " Ah";
@@ -1350,6 +1409,7 @@
                 document.getElementById('delta-val').innerText = displayDelta.toFixed(3) + "V";
             }
             
+            // Cell voltages
             if (cells && Array.isArray(cells)) {
                 const cellContainer = document.getElementById('cell-grid');
                 if(cellContainer.children.length !== cells.length) {
@@ -1363,52 +1423,65 @@
                     if (vEl && bEl) {
                         let displayVolt = Number(volt) > 100 ? Number(volt) / 1000 : Number(volt);
                         vEl.innerText = displayVolt.toFixed(3) + "V";
-                        let pct = ((displayVolt - 2.8) / (4.25 - 2.8)) * 100;
+                        
+                        // 1. UBAH SKALA KE RENTANG LiFePO4: 2.4V (0%) sampai 3.7V (100%)
+                        let pct = ((displayVolt - 2.4) / (3.7 - 2.4)) * 100;
                         bEl.style.width = Math.min(Math.max(pct, 0), 100) + "%";
+                        
+                        // 2. LOGIKA WARNA DINAMIS
+                        if (displayVolt < 2.8) {
+                            bEl.style.backgroundColor = "var(--accent-red)";   // Merah jika di bawah 2.8V
+                        } else if (displayVolt < 3.1) {
+                            bEl.style.backgroundColor = "var(--orange)";       // Kuning/Oranye jika di antara 2.8V - 3.1V
+                        } else {
+                            bEl.style.backgroundColor = "var(--green)";        // Hijau jika di atas 3.1V
+                        }
                     }
                 });
             }
 
             // MENDUKUNG 3 JENIS STATUS CHARGER (Dev 1, 2, dan 3)
-            const chgStatus = document.getElementById('charge-status');
-            const chgEta = document.getElementById('charge-eta');
-            
-            let isCharging = false;
-            let isOri = false;
-            let chgAmps = 0;
+            // PERBAIKAN BUG: Abaikan paket "fast" karena tidak memiliki data charger
+            if (data.type === "full" || data.type === undefined) {
+                const chgStatus = document.getElementById('charge-status');
+                const chgEta = document.getElementById('charge-eta');
+                
+                let isCharging = false;
+                let isOri = false;
+                let chgAmps = 0;
 
-            if (data.chr) {
-                if (data.chr.on === 1) {
-                    isCharging = true; isOri = (data.chr.ori === 1);
-                } else if (modeRaw === "CHARGING" || data.chr.a > 0.5) {
+                if (data.chr) {
+                    if (data.chr.on === 1) {
+                        isCharging = true; isOri = (data.chr.ori === 1);
+                    } else if (modeRaw === "CHARGING" || data.chr.a > 0.5) {
+                        isCharging = true;
+                    }
+                    chgAmps = data.chr.a ?? 0;
+                } else if (modeRaw === "CHARGING") {
                     isCharging = true;
                 }
-                chgAmps = data.chr.a ?? 0;
-            } else if (modeRaw === "CHARGING") {
-                isCharging = true;
-            }
 
-            if (isCharging) {
-                chgStatus.innerText = isOri ? "ORI CHARGER" : "FAST CHARGER";
-                chgStatus.style.color = "var(--cyan)";
-                if (chgAmps <= 0 && rawAmps < 0) chgAmps = Math.abs(rawAmps); 
-                
-                if (capFull !== undefined && capRem !== undefined && chgAmps > 0) {
-                    let hoursRemaining = (capFull - capRem) / chgAmps;
-                    if (hoursRemaining > 0 && hoursRemaining < 100) {
+                if (isCharging) {
+                    chgStatus.innerText = isOri ? "ORI CHARGER" : "FAST CHARGER";
+                    chgStatus.style.color = "var(--cyan)";
+                    if (chgAmps <= 0 && rawAmps < 0) chgAmps = Math.abs(rawAmps); 
+                    
+                    if (capFull !== undefined && capRem !== undefined && chgAmps > 0) {
+                        let hoursRemaining = (capFull - capRem) / chgAmps;
+                        if (hoursRemaining > 0 && hoursRemaining < 100) {
+                            let h = Math.floor(hoursRemaining), m = Math.floor((hoursRemaining - h) * 60);
+                            chgEta.innerText = `${h}h ${m}m`; chgEta.style.color = "var(--green)";
+                        } else { chgEta.innerText = "FULL"; chgEta.style.color = "var(--green)"; }
+                    } else if (soc < 100 && chgAmps > 0) {
+                        let hoursRemaining = (((100 - soc) / 100) * batteryCapacity) / chgAmps;
                         let h = Math.floor(hoursRemaining), m = Math.floor((hoursRemaining - h) * 60);
-                        chgEta.innerText = `${h}h ${m}m`; chgEta.style.color = "var(--green)";
+                        chgEta.innerText = `${h}h ${m}m`; chgEta.style.color = "var(--orange)";
                     } else { chgEta.innerText = "FULL"; chgEta.style.color = "var(--green)"; }
-                } else if (soc < 100 && chgAmps > 0) {
-                    let hoursRemaining = (((100 - soc) / 100) * batteryCapacity) / chgAmps;
-                    let h = Math.floor(hoursRemaining), m = Math.floor((hoursRemaining - h) * 60);
-                    chgEta.innerText = `${h}h ${m}m`; chgEta.style.color = "var(--orange)";
-                } else { chgEta.innerText = "FULL"; chgEta.style.color = "var(--green)"; }
-            } else {
-                chgStatus.innerText = "NOT CHARGING"; chgStatus.style.color = "var(--text-dim)";
-                chgEta.innerText = "--h --m"; chgEta.style.color = "var(--text-dim)";
+                } else {
+                    chgStatus.innerText = "NOT CHARGING"; chgStatus.style.color = "var(--text-dim)";
+                    chgEta.innerText = "--h --m"; chgEta.style.color = "var(--text-dim)";
+                }
             }
-
             updateCharts(speed, rawAmps);
         }
 

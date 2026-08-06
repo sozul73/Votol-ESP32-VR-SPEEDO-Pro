@@ -1,5 +1,5 @@
 // Cache version - increment this to force update on users' browsers
-const CACHE_NAME = 'votol-dash-cache-v2.1';
+const CACHE_NAME = 'votol-dash-cache-v2.2';
 
 // Get base path for GitHub Pages compatibility
 const getBasePath = () => {
@@ -11,6 +11,8 @@ const BASE_PATH = getBasePath();
 const urlsToCache = [
   BASE_PATH + '/',
   BASE_PATH + '/index.html',
+  BASE_PATH + '/style.css',
+  BASE_PATH + '/script.js',
   BASE_PATH + '/manifest.json',
   BASE_PATH + '/icon-192.png',
   BASE_PATH + '/icon-512.png'
